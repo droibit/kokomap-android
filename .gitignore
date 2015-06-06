@@ -27,3 +27,6 @@ build/
 
 # OS cache file
 .DS_Store
+
+# Google Maps API Key
+google_maps_api.xml

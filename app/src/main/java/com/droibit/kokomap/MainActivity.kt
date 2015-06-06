@@ -1,24 +1,52 @@
 package com.droibit.kokomap
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Message
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
+import com.droibit.kokomap.controller.MapController
+import com.google.android.gms.maps.SupportMapFragment
+import kotlin.properties.Delegates
 
 
-public class MainActivity : AppCompatActivity() {
+/**
+ * 指定位置の地図画像を選択するためのアクティビティ
+ *
+ * @author kumagai
+ * @since 2015/05/12
+ */
+public class MainActivity : AppCompatActivity(), Handler.Callback {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+    private val mMapFragment: SupportMapFragment by Delegates.lazy {
+        getSupportFragmentManager().findFragmentById(R.id.map) as SupportMapFragment
+    }
+    private val mMapController: MapController by Delegates.lazy {
+        MapController(this)
     }
 
+    /** {@inheritDoc} */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super<AppCompatActivity>.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        val toolbar = findViewById(R.id.toolbar) as Toolbar
+        toolbar.setTitleTextColor(R.color.darker_gray)
+        setSupportActionBar(toolbar)
+
+        mMapFragment.getMapAsync(mMapController)
+    }
+
+    /** {@inheritDoc} */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu)
         return true
     }
 
+    /** {@inheritDoc} */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -28,6 +56,11 @@ public class MainActivity : AppCompatActivity() {
         if (id == R.id.action_settings) {
             return true
         }
-        return super.onOptionsItemSelected(item)
+        return super<AppCompatActivity>.onOptionsItemSelected(item)
+    }
+
+    /** {@inheritDoc} */
+    override fun handleMessage(msg: Message): Boolean {
+        throw UnsupportedOperationException()
     }
 }
