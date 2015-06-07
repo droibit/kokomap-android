@@ -3,10 +3,15 @@ package com.droibit.kokomap
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
+import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.Toast
+import butterknife.bindView
+import com.droibit.easycreator.showToast
 import com.droibit.kokomap.controller.MapController
 import com.google.android.gms.maps.SupportMapFragment
 import kotlin.properties.Delegates
@@ -23,9 +28,11 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
     private val mMapFragment: SupportMapFragment by Delegates.lazy {
         getSupportFragmentManager().findFragmentById(R.id.map) as SupportMapFragment
     }
+    // [SupportMapFragment]のデリゲート
     private val mMapController: MapController by Delegates.lazy {
         MapController(this)
     }
+    private val mDoneButton: FloatingActionButton by bindView(R.id.fab)
 
     /** {@inheritDoc} */
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,6 +44,8 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
         setSupportActionBar(toolbar)
 
         mMapFragment.getMapAsync(mMapController)
+
+        mDoneButton.setOnClickListener { onClickDone(it) }
     }
 
     /** {@inheritDoc} */
@@ -62,5 +71,10 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
     /** {@inheritDoc} */
     override fun handleMessage(msg: Message): Boolean {
         throw UnsupportedOperationException()
+    }
+
+    // 完了ボタンが押下された時の処理
+    private fun onClickDone(v: View) {
+        showToast(this, "DONE!!", Toast.LENGTH_SHORT)
     }
 }
