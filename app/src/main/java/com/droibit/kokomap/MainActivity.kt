@@ -32,7 +32,8 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
     private val mMapController: MapController by Delegates.lazy {
         MapController(this)
     }
-    private val mDoneButton: FloatingActionButton by bindView(R.id.fab)
+    private val mDropMarkerButton: FloatingActionButton by bindView(R.id.fab)
+    private val mDropBalloonButton: FloatingActionButton by bindView(R.id.fab_balloon)
 
     /** {@inheritDoc} */
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,8 +45,6 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
         setSupportActionBar(toolbar)
 
         mMapFragment.getMapAsync(mMapController)
-
-        mDoneButton.setOnClickListener { onClickDone(it) }
     }
 
     /** {@inheritDoc} */
@@ -88,7 +87,11 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
     }
 
     // 完了ボタンが押下された時の処理
-    private fun onClickDone(v: View) {
+    fun onDropMarker(v: View) {
         showToast(this, "DONE!!", Toast.LENGTH_SHORT)
+    }
+
+    fun onDropMarkerWithBalloon(v: View) {
+        showToast(this, "BALLOON!!", Toast.LENGTH_SHORT)
     }
 }
