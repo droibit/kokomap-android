@@ -32,7 +32,9 @@ public class MapController constructor(context: Context):
     private val mContext = context
     private val mHandler = Handler(Looper.getMainLooper(), context as Handler.Callback)
     private val mRestorer = MapRestorer(context)
+
     private var mMap: GoogleMap? = null
+    private var mCenterPosition: LatLng? = null
 
     /** {@inheritDoc} */
     override fun onMapReady(map: GoogleMap) {
@@ -40,13 +42,17 @@ public class MapController constructor(context: Context):
 
         map.setMyLocationEnabled(true)
         map.setOnCameraChangeListener(this)
-        moveInitalPosition(map)
+        moveInitialPosition(map)
     }
 
     /** {@inheritDoc} */
     override fun onCameraChange(camera: CameraPosition) {
         Log.d(BuildConfig.BUILD_TYPE, "lat: ${camera.target.latitude}, lon: ${camera.target.longitude}, zoom: ${camera.zoom}")
+
+        mCenterPosition = camera.target
     }
+
+
 
     /**
      * ライフサイクルの#onResume 時に呼ぶ
@@ -66,13 +72,13 @@ public class MapController constructor(context: Context):
      * 直近の位置情報あある場合はそれを使用する。
      * とれなかった場合は最後に表示していた地図の状態を復元する。
      */
-    private fun moveInitalPosition(map: GoogleMap) {
+    private fun moveInitialPosition(map: GoogleMap) {
         val lm = mContext.getLocationManager()
         val lastLocation = lm?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
         if (lastLocation != null) {
-            map.animateCamera(lat  = lastLocation.getLatitude(),
-                              lng  = lastLocation.getLongitude(),
-                               zoom = MapRestorer.EXPAND_ZOOM)
+            map.moveCamera(lat  = lastLocation.getLatitude(),
+                           lng  = lastLocation.getLongitude(),
+                           zoom = MapRestorer.EXPAND_ZOOM)
             return
         }
         mRestorer.restore(map, animation = true)

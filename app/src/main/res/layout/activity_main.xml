@@ -26,35 +26,38 @@
             android:layout_height="match_parent"
             android:name="com.google.android.gms.maps.SupportMapFragment" />
 
-        <LinearLayout
+        <com.github.clans.fab.FloatingActionMenu
+            android:id="@+id/fab_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
             android:layout_gravity="bottom|right"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:orientation="vertical" >
+            app:menu_buttonSpacing="@dimen/fab_vertical_space"
+            app:menu_colorNormal="@color/accent"
+            app:menu_colorPressed="@color/accent_pressed" >
 
-            <android.support.design.widget.FloatingActionButton
+            <com.github.clans.fab.FloatingActionButton
                 android:id="@+id/fab_balloon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_action_drop_marker_balloon"
-                android:layout_marginBottom="16dp"
                 android:onClick="onDropMarkerWithBalloon"
-                app:borderWidth="0dp"
-                app:fabSize="normal" />
+                app:fab_size="mini"
+                app:fab_colorNormal="@color/gray_light"
+                app:fab_colorPressed="@color/gray_light_pressed" />
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fab"
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_marker"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_action_drop_marker"
                 android:onClick="onDropMarker"
-                app:borderWidth="0dp"
-                app:fabSize="normal" />
+                app:fab_size="mini"
+                app:fab_colorNormal="@color/gray_light"
+                app:fab_colorPressed="@color/gray_light_pressed" />
 
-        </LinearLayout>
+        </com.github.clans.fab.FloatingActionMenu>
 
     </FrameLayout>
 

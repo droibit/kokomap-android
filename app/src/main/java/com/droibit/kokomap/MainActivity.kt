@@ -3,7 +3,6 @@ package com.droibit.kokomap
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
@@ -13,6 +12,8 @@ import android.widget.Toast
 import butterknife.bindView
 import com.droibit.easycreator.showToast
 import com.droibit.kokomap.controller.MapController
+import com.github.clans.fab.FloatingActionButton
+import com.github.clans.fab.FloatingActionMenu
 import com.google.android.gms.maps.SupportMapFragment
 import kotlin.properties.Delegates
 
@@ -32,8 +33,7 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
     private val mMapController: MapController by Delegates.lazy {
         MapController(this)
     }
-    private val mDropMarkerButton: FloatingActionButton by bindView(R.id.fab)
-    private val mDropBalloonButton: FloatingActionButton by bindView(R.id.fab_balloon)
+    private val mFabMenu: FloatingActionMenu by bindView(R.id.fab_menu)
 
     /** {@inheritDoc} */
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +41,7 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
         setContentView(R.layout.activity_main)
 
         val toolbar = findViewById(R.id.toolbar) as Toolbar
-        toolbar.setTitleTextColor(R.color.darker_gray)
+        toolbar.setTitleTextColor(R.color.gray_dark)
         setSupportActionBar(toolbar)
 
         mMapFragment.getMapAsync(mMapController)
@@ -89,9 +89,13 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
     // 完了ボタンが押下された時の処理
     fun onDropMarker(v: View) {
         showToast(this, "DONE!!", Toast.LENGTH_SHORT)
+
+        mFabMenu.close(true)
     }
 
     fun onDropMarkerWithBalloon(v: View) {
         showToast(this, "BALLOON!!", Toast.LENGTH_SHORT)
+
+        mFabMenu.close(true)
     }
 }
