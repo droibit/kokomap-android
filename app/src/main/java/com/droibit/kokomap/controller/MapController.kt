@@ -10,6 +10,7 @@ import com.droibit.kokomap.BuildConfig
 import com.droibit.kokomap.extension.animateCamera
 import com.droibit.kokomap.extension.moveCamera
 import com.droibit.kokomap.model.MapRestorer
+import com.droibit.kokomap.model.TinyCamera
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -52,8 +53,6 @@ public class MapController constructor(context: Context):
         mCenterPosition = camera.target
     }
 
-
-
     /**
      * ライフサイクルの#onResume 時に呼ぶ
      */
@@ -74,13 +73,13 @@ public class MapController constructor(context: Context):
      */
     private fun moveInitialPosition(map: GoogleMap) {
         val lm = mContext.getLocationManager()
-        val lastLocation = lm?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-        if (lastLocation != null) {
-            map.moveCamera(lat  = lastLocation.getLatitude(),
-                           lng  = lastLocation.getLongitude(),
-                           zoom = MapRestorer.EXPAND_ZOOM)
-            return
-        }
-        mRestorer.restore(map, animation = true)
+        val ll = lm?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+
+        var camera = if (ll != null) {
+                        TinyCamera(ll.getLatitude(), ll.getLongitude(), MapRestorer.EXPAND_ZOOM)
+                     } else {
+                        mRestorer.restore()
+                     }
+        map.moveCamera(camera.latitude, camera.latitude, camera.zoom)
     }
 }
