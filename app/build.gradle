@@ -16,6 +16,8 @@ android {
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
+
+        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
     buildTypes {
         release {
@@ -34,6 +36,9 @@ android {
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
+    packagingOptions {
+        exclude 'LICENSE.txt'
+    }
 }
 
 dependencies {
@@ -51,4 +56,8 @@ dependencies {
     compile('com.jakewharton:kotterknife:0.1.0-SNAPSHOT') {
         transitive = false
     }
+
+    testCompile 'junit:junit:4.12'
+    androidTestCompile 'com.android.support.test:testing-support-lib:0.1'
+    androidTestCompile 'org.hamcrest:hamcrest-core:1.3'
 }
