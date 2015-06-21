@@ -4,6 +4,7 @@ apply plugin: 'kotlin-android'
 repositories {
     maven { url 'http://droibit.github.com/easycreator/repository' }
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+    maven { url "https://jitpack.io" }
 }
 
 android {
@@ -49,6 +50,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "com.android.support:design:$support_lib_version"
     compile 'com.github.clans:fab:1.5.0'
+    compile 'com.github.droibit:trimmin:0.1.1'
 
     compile('com.droibit:easycreator:0.3.7@aar') {
         transitive = false
@@ -57,7 +59,5 @@ dependencies {
         transitive = false
     }
 
-    testCompile 'junit:junit:4.12'
     androidTestCompile 'com.android.support.test:testing-support-lib:0.1'
-    androidTestCompile 'org.hamcrest:hamcrest-core:1.3'
 }
