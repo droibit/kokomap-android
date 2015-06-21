@@ -8,16 +8,16 @@ import com.google.android.gms.maps.model.LatLng
  *
  * Created by kumagai on 2015/06/18.
  */
-public @data class TinyCamera constructor(lat: Double, lng: Double, zoom: Float) {
+public @data class RestorableCamera constructor(lat: Double, lng: Double, zoom: Float) {
 
     val latLng = LatLng(lat, lng)
     val zoom = zoom
 
-    val latitude:Double get() = latLng.latitude
+    val latitude: Double get() = latLng.latitude
     val longitude: Double get() = latLng.longitude
 }
 
 /**
  * [CameraPosition]からプリファレンスに保存するための情報に変換する
  */
-fun CameraPosition.toTinyCamera() = TinyCamera(target.latitude, target.longitude, zoom)
+fun CameraPosition.toRestorableCamera() = RestorableCamera(target.latitude, target.longitude, zoom)

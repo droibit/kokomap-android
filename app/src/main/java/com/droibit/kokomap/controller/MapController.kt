@@ -4,13 +4,14 @@ import android.content.Context
 import android.location.LocationManager
 import android.os.Handler
 import android.os.Looper
+import android.support.annotation.WorkerThread
 import android.util.Log
 import com.droibit.easycreator.getLocationManager
 import com.droibit.kokomap.BuildConfig
 import com.droibit.kokomap.extension.animateCamera
 import com.droibit.kokomap.extension.moveCamera
 import com.droibit.kokomap.model.MapRestorer
-import com.droibit.kokomap.model.TinyCamera
+import com.droibit.kokomap.model.RestorableCamera
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -38,6 +39,7 @@ public class MapController constructor(context: Context):
     private var mCenterPosition: LatLng? = null
 
     /** {@inheritDoc} */
+    @WorkerThread
     override fun onMapReady(map: GoogleMap) {
         mMap = map
 
@@ -63,7 +65,7 @@ public class MapController constructor(context: Context):
      * ライフサイクルの#onPause 時に呼ぶ
      */
     fun onPause() {
-        mMap?.let { mRestorer.store(it) }
+        mMap?.let { mRestorer.store(it.getCameraPosition()) }
     }
 
     /**
@@ -76,10 +78,10 @@ public class MapController constructor(context: Context):
         val ll = lm?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
 
         var camera = if (ll != null) {
-                        TinyCamera(ll.getLatitude(), ll.getLongitude(), MapRestorer.EXPAND_ZOOM)
+                        RestorableCamera(ll.getLatitude(), ll.getLongitude(), MapRestorer.EXPAND_ZOOM)
                      } else {
                         mRestorer.restore()
                      }
-        map.moveCamera(camera.latitude, camera.latitude, camera.zoom)
+        map.moveCamera(camera.latitude, camera.longitude, camera.zoom)
     }
 }
