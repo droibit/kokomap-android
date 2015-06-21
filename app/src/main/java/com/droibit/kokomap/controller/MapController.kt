@@ -20,6 +20,8 @@ import com.google.android.gms.maps.model.LatLng
 import kotlin.properties.Delegates
 
 /**
+ * GoogleMapと各種モデルクラスを連携させるためのクラス。<br>
+ * SupportMapFragmentを継承せずこのクラスにデリゲートする
  *
  * @auther kumagai
  * @since 15/06/07
@@ -30,6 +32,9 @@ import kotlin.properties.Delegates
 public class MapController constructor(context: Context):
                 OnMapReadyCallback, OnCameraChangeListener {
 
+// TODO: 2015/06/21 現在、警告が出ないので意味なし
+//    @IntDef(GoogleMap.MAP_TYPE_NORMAL.toLong(), GoogleMap.MAP_TYPE_SATELLITE.toLong())
+//    public annotation class Maps
 
     private val mContext = context
     private val mHandler = Handler(Looper.getMainLooper(), context as Handler.Callback)
@@ -69,8 +74,23 @@ public class MapController constructor(context: Context):
     }
 
     /**
-     * カメラを初期位置に移動する。
-     * 直近の位置情報あある場合はそれを使用する。
+     * 地図の種類を変更する際に呼ばれる処理
+     *
+     * @param toSatellite trueの場合は衛星写真に変更する
+     * @return trueの場合は変更、falseの場合は変更していない（地図の準備がまだ）
+     */
+    fun onMapTypeChanged(satellite: Boolean): Boolean {
+        mMap?.let {
+            it.setMapType(satellite.toSatelliteMapType())
+            return true
+        }
+        return false
+    }
+
+    /**
+     * カメラを初期位置に移動する。<br>
+     *
+     * 直近の位置情報がある場合はそれを使用し、
      * とれなかった場合は最後に表示していた地図の状態を復元する。
      */
     private fun moveInitialPosition(map: GoogleMap) {
@@ -85,3 +105,6 @@ public class MapController constructor(context: Context):
         map.moveCamera(camera.latitude, camera.longitude, camera.zoom)
     }
 }
+
+// ブール値からマップの種類に変換する
+internal fun Boolean.toSatelliteMapType() = if (this) GoogleMap.MAP_TYPE_SATELLITE else GoogleMap.MAP_TYPE_NORMAL

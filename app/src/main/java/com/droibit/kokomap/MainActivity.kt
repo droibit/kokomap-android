@@ -75,8 +75,9 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
         // as you specify a parent activity in AndroidManifest.xml.
         val id = item.getItemId()
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true
+        when (id) {
+            R.id.action_settings  -> { return startSettingsActivity() }
+            R.id.action_satellite -> { return changeMapType(item) }
         }
         return super<AppCompatActivity>.onOptionsItemSelected(item)
     }
@@ -86,16 +87,35 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
         throw UnsupportedOperationException()
     }
 
-    // 完了ボタンが押下された時の処理
+    /**
+     * マーカードロップボタンが押下された時の処理
+     */
     fun onDropMarker(v: View) {
         showToast(this, "DONE!!", Toast.LENGTH_SHORT)
 
         mFabMenu.close(true)
     }
 
+    /**
+     * 吹き出し付きマーカードロップボタンが押下された時の処理
+     */
     fun onDropMarkerWithBalloon(v: View) {
         showToast(this, "BALLOON!!", Toast.LENGTH_SHORT)
 
         mFabMenu.close(true)
+    }
+
+    // 設定画面を表示する
+    private fun startSettingsActivity(): Boolean {
+        return true
+    }
+
+    // GoogleMapが表示する地図の種類を変更する
+    private fun changeMapType(item: MenuItem): Boolean {
+        if (mMapController.onMapTypeChanged(!item.isChecked())) {
+            item.setChecked(!item.isChecked())
+            return true
+        }
+        return false
     }
 }
