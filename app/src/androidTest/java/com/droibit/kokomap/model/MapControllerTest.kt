@@ -1,4 +1,4 @@
-package com.droibit.kokomap.controller
+package com.droibit.kokomap.model
 
 import android.support.test.runner.AndroidJUnit4
 import android.test.suitebuilder.annotation.SmallTest

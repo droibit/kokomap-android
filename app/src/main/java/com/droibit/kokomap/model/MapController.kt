@@ -107,4 +107,4 @@ public class MapController constructor(context: Context):
 }
 
 // ブール値からマップの種類に変換する
-internal fun Boolean.toSatelliteMapType() = if (this) GoogleMap.MAP_TYPE_SATELLITE else GoogleMap.MAP_TYPE_NORMAL
+fun Boolean.toSatelliteMapType() = if (this) GoogleMap.MAP_TYPE_SATELLITE else GoogleMap.MAP_TYPE_NORMAL

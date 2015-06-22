@@ -4,4 +4,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="fab_vertical_space">8dp</dimen>
+
+    <dimen name="toolbar_elevation">8dp</dimen>
 </resources>

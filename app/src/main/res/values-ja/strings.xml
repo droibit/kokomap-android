@@ -4,7 +4,7 @@
 
     <string name="action_settings">設定</string>
     <string name="action_satellite">航空写真</string>
-    <string name="pref_app_dest_folder_title" translatable="false">画像の保存先フォルダ</string>
+    <string name="pref_app_dest_folder_title">画像の保存先フォルダ</string>
     <string name="pref_category_title_summary">概要</string>
     <string name="pref_summary_oss_title">オープンソースライセンス</string>
     <string name="pref_summary_version_title">ビルドバージョン</string>

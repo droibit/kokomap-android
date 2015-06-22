@@ -16,6 +16,7 @@ import com.github.clans.fab.FloatingActionButton
 import com.github.clans.fab.FloatingActionMenu
 import com.google.android.gms.maps.SupportMapFragment
 import kotlin.properties.Delegates
+import com.droibit.easycreator.startActivity
 
 
 /**
@@ -107,6 +108,7 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
 
     // 設定画面を表示する
     private fun startSettingsActivity(): Boolean {
+        startActivity<SettingsActivity>()
         return true
     }
 
