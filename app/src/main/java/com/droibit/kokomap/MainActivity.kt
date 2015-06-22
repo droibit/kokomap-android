@@ -11,7 +11,7 @@ import android.view.View
 import android.widget.Toast
 import butterknife.bindView
 import com.droibit.easycreator.showToast
-import com.droibit.kokomap.controller.MapController
+import com.droibit.kokomap.model.MapController
 import com.github.clans.fab.FloatingActionButton
 import com.github.clans.fab.FloatingActionMenu
 import com.google.android.gms.maps.SupportMapFragment

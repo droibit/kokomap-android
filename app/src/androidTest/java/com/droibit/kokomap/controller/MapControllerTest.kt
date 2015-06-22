@@ -2,6 +2,7 @@ package com.droibit.kokomap.controller
 
 import android.support.test.runner.AndroidJUnit4
 import android.test.suitebuilder.annotation.SmallTest
+import com.droibit.kokomap.model.toSatelliteMapType
 import com.google.android.gms.maps.GoogleMap
 import org.junit.runner.RunWith
 import junit.framework.Assert.assertEquals

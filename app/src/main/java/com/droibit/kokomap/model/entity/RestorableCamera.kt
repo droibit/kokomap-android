@@ -1,4 +1,4 @@
-package com.droibit.kokomap.model
+package com.droibit.kokomap.model.entity
 
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng

@@ -1,4 +1,4 @@
-package com.droibit.kokomap.controller
+package com.droibit.kokomap.model
 
 import android.content.Context
 import android.location.LocationManager
@@ -11,7 +11,7 @@ import com.droibit.kokomap.BuildConfig
 import com.droibit.kokomap.extension.animateCamera
 import com.droibit.kokomap.extension.moveCamera
 import com.droibit.kokomap.model.MapRestorer
-import com.droibit.kokomap.model.RestorableCamera
+import com.droibit.kokomap.model.entity.RestorableCamera
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -76,7 +76,7 @@ public class MapController constructor(context: Context):
     /**
      * 地図の種類を変更する際に呼ばれる処理
      *
-     * @param toSatellite trueの場合は衛星写真に変更する
+     * @param satellite trueの場合は衛星写真に変更する
      * @return trueの場合は変更、falseの場合は変更していない（地図の準備がまだ）
      */
     fun onMapTypeChanged(satellite: Boolean): Boolean {
@@ -98,7 +98,7 @@ public class MapController constructor(context: Context):
         val ll = lm?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
 
         var camera = if (ll != null) {
-                        RestorableCamera(ll.getLatitude(), ll.getLongitude(), MapRestorer.EXPAND_ZOOM)
+            RestorableCamera(ll.getLatitude(), ll.getLongitude(), MapRestorer.Companion.EXPAND_ZOOM)
                      } else {
                         mRestorer.restore()
                      }

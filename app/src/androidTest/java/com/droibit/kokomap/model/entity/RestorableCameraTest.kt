@@ -1,8 +1,10 @@
-package com.droibit.kokomap.model
+package com.droibit.kokomap.model.entity
 
 import android.support.test.runner.AndroidJUnit4
 import android.test.AndroidTestCase
 import android.test.suitebuilder.annotation.SmallTest
+import com.droibit.kokomap.model.MapRestorer
+import com.droibit.kokomap.model.entity.RestorableCamera
 import org.junit.Test
 import org.junit.runner.RunWith
 import junit.framework.Assert.assertEquals
@@ -21,8 +23,8 @@ public class RestorableCameraTest {
     @Test
     public fun testCreateRestorableCamera() {
         val camera = RestorableCamera(MapRestorer.DEFAULT_LAT,
-                                      MapRestorer.DEFAULT_LNG,
-                                      MapRestorer.DEFAULT_ZOOM)
+                MapRestorer.DEFAULT_LNG,
+                MapRestorer.DEFAULT_ZOOM)
 
         assertNotNull(camera)
 
