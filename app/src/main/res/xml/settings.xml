@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/pref_category_title_app">
+        <Preference android:key="@string/pref_app_dest_folder_key"
+                    android:title="@string/pref_app_dest_folder_title" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/pref_category_title_summary">
+        <Preference android:key="@string/pref_summary_oss_key"
+                    android:title="@string/pref_summary_oss_title" />
+        <Preference android:key="@string/pref_summary_version_key"
+                    android:title="@string/pref_summary_version_title"
+                    android:summary="@string/pref_summary_version_summary" />
+    </PreferenceCategory>
+</PreferenceScreen>
