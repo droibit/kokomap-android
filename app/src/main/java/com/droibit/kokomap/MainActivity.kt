@@ -85,7 +85,8 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
 
     /** {@inheritDoc} */
     override fun handleMessage(msg: Message): Boolean {
-        throw UnsupportedOperationException()
+
+        return true
     }
 
     /**
@@ -93,6 +94,8 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
      */
     fun onDropMarker(v: View) {
         showToast(this, "DONE!!", Toast.LENGTH_SHORT)
+
+        mMapController.onDropMarker(withBaloon = false)
 
         mFabMenu.close(true)
     }

@@ -12,11 +12,14 @@ import com.droibit.kokomap.extension.animateCamera
 import com.droibit.kokomap.extension.moveCamera
 import com.droibit.kokomap.model.MapRestorer
 import com.droibit.kokomap.model.entity.RestorableCamera
+import com.droibit.kokomap.view.animation.MarkerAnimator
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import kotlin.properties.Delegates
 
 /**
@@ -39,6 +42,7 @@ public class MapController constructor(context: Context):
     private val mContext = context
     private val mHandler = Handler(Looper.getMainLooper(), context as Handler.Callback)
     private val mRestorer = MapRestorer(context)
+    private val mMarkerAnimator = MarkerAnimator(context as Handler.Callback)
 
     private var mMap: GoogleMap? = null
     private var mCenterPosition: LatLng? = null
@@ -85,6 +89,23 @@ public class MapController constructor(context: Context):
             return true
         }
         return false
+    }
+
+    /**
+     * 地図にマーカーを落とす際に呼ばれる処理
+     *
+     * @param マーカーに吹き出しをつけるかどうか
+     */
+    fun onDropMarker(withBaloon: Boolean) {
+        // FIXME: 実装
+        mMap?.let {
+            val marker = it.addMarker(MarkerOptions()
+                                        .position(it.getCameraPosition().target)
+                                        .draggable(false)
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+            )
+            mMarkerAnimator.drop(marker, 2000L)
+        }
     }
 
     /**
