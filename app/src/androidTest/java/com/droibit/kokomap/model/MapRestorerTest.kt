@@ -35,18 +35,18 @@ public class MapRestorerTest: InstrumentationTestCase() {
     @Test
     public fun testStoreAndRestore() {
         // プリファレンスへ保存
-        val mRestorer = MapRestorer(getInstrumentation().getContext())
+        val restorer = MapRestorer(getInstrumentation().getContext())
         val notRestoreCamera = CameraPosition.builder()
                                     .target(LatLng(MapRestorer.DEFAULT_LAT,
                                                    MapRestorer.DEFAULT_LNG))
                                     .zoom(MapRestorer.DEFAULT_ZOOM)
                                     .build()
         // FIXME: プリファレンスに保存されるが、#commit()の戻り値は常にfalse?
-        val commit = mRestorer.store(notRestoreCamera)
+        val commit = restorer.store(notRestoreCamera)
 //        assertTrue(commit)
 
         // プリファレンスから復元
-        var restoredCamera = mRestorer.restore()
+        var restoredCamera = restorer.restore()
 
         assertNotNull(restoredCamera)
 
