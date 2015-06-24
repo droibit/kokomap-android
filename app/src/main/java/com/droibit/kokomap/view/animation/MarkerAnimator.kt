@@ -23,13 +23,13 @@ class MarkerAnimator constructor(callback: Handler.Callback) {
      * アニメーション付きで地図にマーカーを落とす。
      */
     fun drop(marker: Marker, durationMillis: Long) {
-        mHandler.post( dropRun {
+        mHandler.post {
             val elapsedMillis = SystemClock.uptimeMillis() - startMillis
             val t = Math.max(1f - interpolator.getInterpolation((elapsedMillis.toFloat() / durationMillis)), 0f)
 
             marker.setAnchor(.5f, 1f + 10f * t)
 
-            if (t > 0.0) {
+            if (t > 0f) {
                 // Post again 15ms later.
                 mHandler.postDelayed(this, 15L);
             } else {
@@ -51,4 +51,4 @@ private class DropRunnable constructor (private val drop: DropRunnable.()->Unit)
     override fun run() = drop()
 }
 
-private fun dropRun(drop: DropRunnable.()->Unit) = DropRunnable(drop)
+private fun Handler.post(run: DropRunnable.()->Unit) = post(DropRunnable(run))
