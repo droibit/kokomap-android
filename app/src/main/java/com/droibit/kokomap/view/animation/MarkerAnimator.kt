@@ -23,26 +23,20 @@ class MarkerAnimator constructor(callback: Handler.Callback) {
      * アニメーション付きで地図にマーカーを落とす。
      */
     fun drop(marker: Marker, durationMillis: Long) {
-//        val interpolator = BounceInterpolator()
-//        val startMillis = SystemClock.uptimeMillis()
+        mHandler.post( dropRun {
+            val elapsedMillis = SystemClock.uptimeMillis() - startMillis
+            val t = Math.max(1f - interpolator.getInterpolation((elapsedMillis.toFloat() / durationMillis)), 0f)
 
+            marker.setAnchor(.5f, 1f + 10f * t)
 
-        mHandler.post(object: DropRunnable() {
-            override fun drop() {
-                val elapsedMillis = SystemClock.uptimeMillis() - startMillis
-                val t = Math.max(1f - interpolator.getInterpolation((elapsedMillis.toFloat() / durationMillis)), 0f)
-
-                marker.setAnchor(.5f, 1f + 10f * t)
-
-                if (t > 0.0) {
-                    // Post again 15ms later.
-                    mHandler.postDelayed(this, 15L);
-                } else {
-                    mHandler.sendEmptyMessage(MSG_DROPPED_MARKER)
-                    //marker.showInfoWindow();
-                }
+            if (t > 0.0) {
+                // Post again 15ms later.
+                mHandler.postDelayed(this, 15L);
+            } else {
+                mHandler.sendEmptyMessage(MSG_DROPPED_MARKER)
+                //marker.showInfoWindow();
             }
-        })  // #post(...)
+        })
     }
 }
 
@@ -50,13 +44,11 @@ class MarkerAnimator constructor(callback: Handler.Callback) {
  * [Runnable] な無名クラスを作成した場合 this参照がクラスを指してしまうのが
  * 解決できなかったため、継承したクラスを作成することにした。
  */
-private abstract class DropRunnable: Runnable {
-    protected  val interpolator: Interpolator = BounceInterpolator()
-    protected  val startMillis: Long = SystemClock.uptimeMillis()
+private class DropRunnable constructor (private val drop: DropRunnable.()->Unit): Runnable {
+    val interpolator: Interpolator = BounceInterpolator()
+    val startMillis: Long = SystemClock.uptimeMillis()
 
-    override fun run() {
-        drop()
-    }
-
-    protected abstract fun drop()
+    override fun run() = drop()
 }
+
+private fun dropRun(drop: DropRunnable.()->Unit) = DropRunnable(drop)
