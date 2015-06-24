@@ -16,11 +16,13 @@ import com.droibit.kokomap.view.animation.MarkerAnimator
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import kotlin.properties.Delegates
+
+public val MSG_DROPPED_MARKER: Int = 1
+
+public val FLOW_MARKER_DROP_ONLY: Int        = 1
+public val FLOW_MARKER_DROP_WITH_BALLON: Int = 2
 
 /**
  * GoogleMapと各種モデルクラスを連携させるためのクラス。<br>
@@ -85,27 +87,41 @@ public class MapController constructor(context: Context):
      */
     fun onMapTypeChanged(satellite: Boolean): Boolean {
         mMap?.let {
-            it.setMapType(satellite.toSatelliteMapType())
+            it.setMapType(satellite.toMapType())
             return true
         }
         return false
     }
 
     /**
-     * 地図にマーカーを落とす際に呼ばれる処理
+     * 地図にマーカーを落とす際に呼ばれる処理。
+     * ドロップアニメーション中はマーカーは追加できないようにする
      *
-     * @param マーカーに吹き出しをつけるかどうか
+     * @param withBalloon マーカーに吹き出しをつけるかどうか
      */
-    fun onDropMarker(withBaloon: Boolean) {
-        // FIXME: 実装
+    fun onDropMarker(withBalloon: Boolean) {
+        if (mMarkerAnimator.isAnimating) {
+            return
+        }
+
         mMap?.let {
             val marker = it.addMarker(MarkerOptions()
                                         .position(it.getCameraPosition().target)
                                         .draggable(false)
                                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
             )
-            mMarkerAnimator.drop(marker, 2000L)
+            mMarkerAnimator.drop(
+                    marker         = marker,
+                    flowType       = withBalloon.toDropFlow(),
+                    durationMillis = 2000L)
         }
+    }
+
+    /**
+     * アニメーションが終了して追加が完了したときに呼ばれる処理
+     */
+    fun onDropMarkerFinish(marker: Marker, dropFlow: Int) {
+
     }
 
     /**
@@ -128,4 +144,6 @@ public class MapController constructor(context: Context):
 }
 
 // ブール値からマップの種類に変換する
-fun Boolean.toSatelliteMapType() = if (this) GoogleMap.MAP_TYPE_SATELLITE else GoogleMap.MAP_TYPE_NORMAL
+fun Boolean.toMapType() = if (this) GoogleMap.MAP_TYPE_SATELLITE else GoogleMap.MAP_TYPE_NORMAL
+// ブール値からマーカー追加のフローを取得する
+fun Boolean.toDropFlow() = if (this) FLOW_MARKER_DROP_WITH_BALLON else FLOW_MARKER_DROP_ONLY

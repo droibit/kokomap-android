@@ -17,6 +17,8 @@ import com.github.clans.fab.FloatingActionMenu
 import com.google.android.gms.maps.SupportMapFragment
 import kotlin.properties.Delegates
 import com.droibit.easycreator.startActivity
+import com.droibit.kokomap.model.MSG_DROPPED_MARKER
+import com.google.android.gms.maps.model.Marker
 
 
 /**
@@ -85,7 +87,9 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
 
     /** {@inheritDoc} */
     override fun handleMessage(msg: Message): Boolean {
-
+        when (msg.what) {
+            MSG_DROPPED_MARKER -> mMapController.onDropMarkerFinish(msg.obj as Marker, msg.arg1)
+        }
         return true
     }
 
@@ -95,7 +99,7 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
     fun onDropMarker(v: View) {
         showToast(this, "DONE!!", Toast.LENGTH_SHORT)
 
-        mMapController.onDropMarker(withBaloon = false)
+        mMapController.onDropMarker(withBalloon = false)
 
         mFabMenu.close(true)
     }

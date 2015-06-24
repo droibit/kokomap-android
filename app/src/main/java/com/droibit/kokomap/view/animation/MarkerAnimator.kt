@@ -4,9 +4,9 @@ import android.os.Handler
 import android.os.SystemClock
 import android.view.animation.BounceInterpolator
 import android.view.animation.Interpolator
+import com.droibit.easycreator.sendMessage
+import com.droibit.kokomap.model.MSG_DROPPED_MARKER
 import com.google.android.gms.maps.model.Marker
-
-public val MSG_DROPPED_MARKER: Int = 1
 
 /**
  * バウンドアニメーション付きで地図にマーカーを落とす。
@@ -17,26 +17,37 @@ public val MSG_DROPPED_MARKER: Int = 1
  */
 class MarkerAnimator constructor(callback: Handler.Callback) {
 
+    volatile var isAnimating: Boolean = false
+        private set
+
     private val mHandler = Handler(callback)
 
     /**
      * アニメーション付きで地図にマーカーを落とす。
+     *
+     * @param marker 対象のマーカー
+     * @param flowType マーカー追加後のフローの種類
+     * @param durationMillis アニメーション時間
      */
-    fun drop(marker: Marker, durationMillis: Long) {
+    fun drop(marker: Marker, flowType: Int, durationMillis: Long) {
+        isAnimating = true
+
         mHandler.post {
             val elapsedMillis = SystemClock.uptimeMillis() - startMillis
             val t = Math.max(1f - interpolator.getInterpolation((elapsedMillis.toFloat() / durationMillis)), 0f)
-
             marker.setAnchor(.5f, 1f + 10f * t)
 
             if (t > 0f) {
-                // Post again 15ms later.
                 mHandler.postDelayed(this, 15L);
-            } else {
-                mHandler.sendEmptyMessage(MSG_DROPPED_MARKER)
-                //marker.showInfoWindow();
+                return@post
             }
-        })
+            mHandler.sendMessage {
+                what = MSG_DROPPED_MARKER
+                obj  = marker
+                arg1 = flowType
+            }
+            isAnimating = false
+        }
     }
 }
 
@@ -50,5 +61,4 @@ private class DropRunnable constructor (private val drop: DropRunnable.()->Unit)
 
     override fun run() = drop()
 }
-
 private fun Handler.post(run: DropRunnable.()->Unit) = post(DropRunnable(run))
