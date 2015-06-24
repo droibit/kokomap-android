@@ -12,7 +12,7 @@ import java.util.*
  *
  * @author kumagai
  */
-public open class PauseHandler(): Handler() {
+public open class ResumeHandler(): Handler() {
 
     private val mMessageQueue = ArrayList<Message>()
     private var mPaused = false

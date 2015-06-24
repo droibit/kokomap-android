@@ -47,6 +47,7 @@ class MarkerAnimator constructor(callback: Handler.Callback) {
                 arg1 = flowType
             }
             isAnimating = false
+            marker.showInfoWindow()
         }
     }
 }

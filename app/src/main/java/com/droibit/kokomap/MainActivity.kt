@@ -2,6 +2,7 @@ package com.droibit.kokomap
 
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.os.Message
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
@@ -10,14 +11,17 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import butterknife.bindView
+import com.droibit.easycreator.postDelayed
+import com.droibit.easycreator.sendMessageDelayed
 import com.droibit.easycreator.showToast
-import com.droibit.kokomap.model.MapController
 import com.github.clans.fab.FloatingActionButton
 import com.github.clans.fab.FloatingActionMenu
 import com.google.android.gms.maps.SupportMapFragment
 import kotlin.properties.Delegates
 import com.droibit.easycreator.startActivity
-import com.droibit.kokomap.model.MSG_DROPPED_MARKER
+import com.droibit.kokomap.fragment.BalloonDialogFragment
+import com.droibit.kokomap.model.*
+import com.droibit.kokomap.utils.ResumeHandler
 import com.google.android.gms.maps.model.Marker
 
 
@@ -33,10 +37,11 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
         getSupportFragmentManager().findFragmentById(R.id.map) as SupportMapFragment
     }
     // [SupportMapFragment]のデリゲート
-    private val mMapController: MapController by Delegates.lazy {
-        MapController(this)
-    }
+    private val mMapController: MapController by Delegates.lazy { MapController(this) }
     private val mFabMenu: FloatingActionMenu by bindView(R.id.fab_menu)
+
+    // バックグランド時にダイアログを操作しないためのハンドラー
+    private val mHandler: ResumeHandler = ResumeHandler()
 
     /** {@inheritDoc} */
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,14 +59,14 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
     override fun onResume() {
         super<AppCompatActivity>.onResume()
 
-        mMapController.onResume()
+        mHandler.resume()
     }
 
     /** {@inheritDoc} */
     override fun onPause() {
         super<AppCompatActivity>.onPause()
 
-        mMapController.onPause()
+        mHandler.pause()
     }
 
     /** {@inheritDoc} */
@@ -86,7 +91,8 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
     /** {@inheritDoc} */
     override fun handleMessage(msg: Message): Boolean {
         when (msg.what) {
-            MSG_DROPPED_MARKER -> mMapController.onDropMarkerFinish(msg.obj as Marker, msg.arg1)
+            MSG_DROPPED_MARKER -> onDropMarkerFinish(msg.obj as Marker, msg.arg1)
+            MSG_SNIPPET_CANCEL -> mMapController.clearMarker()
         }
         return true
     }
@@ -114,5 +120,18 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
             return true
         }
         return false
+    }
+
+    // 吹き出しの追加が完了した時に呼ばれる処理
+    private fun onDropMarkerFinish(marker: Marker, flowType: Int) {
+        if (flowType == FLOW_MARKER_DROP_ONLY) {
+            mMapController.onDropMarkerFinish(marker)
+            return
+        }
+
+        // 吹き出し内容を入力するためのダイアログを表示する
+        mHandler.sendMessageDelayed(250L) {
+            obj = Runnable { BalloonDialogFragment().show(getSupportFragmentManager()) }
+        }
     }
 }

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:paddingTop="@dimen/dialog_side_space"
+              android:paddingLeft="@dimen/dialog_side_space"
+              android:paddingRight="@dimen/dialog_side_space"
+              android:paddingBottom="@dimen/dialog_bottom_space" >
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/balloon_snippet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/marker_snippet_hint"
+            android:fontFamily="sans-serif-light"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:maxLines="2"
+            android:maxLength="@integer/balloon_snipet_length"
+            tools:text="@string/marker_snippet_hint" />
+
+    </android.support.design.widget.TextInputLayout>
+
+</LinearLayout>

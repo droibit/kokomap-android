@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="bouce_animation_millis">1500</integer>
+
+    <integer name="balloon_snipet_length">30</integer>
 </resources>

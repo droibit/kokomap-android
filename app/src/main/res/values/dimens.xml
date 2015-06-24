@@ -3,6 +3,9 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <dimen name="dialog_side_space">20dp</dimen>
+    <dimen name="dialog_bottom_space">24dp</dimen>
+
     <dimen name="fab_vertical_space">8dp</dimen>
 
     <dimen name="toolbar_elevation">8dp</dimen>

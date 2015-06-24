@@ -14,4 +14,7 @@
     <string name="pref_summary_version_summary" translatable="false">Ver: %1$s</string>
     <string name="dest_dir" translatable="false">kokomap</string>
     <string name="dest_file_name" translatable="false">kokomap_%1$s.png</string>
+    <string name="marker_title">Here</string>
+    <string name="marker_snippet_hint">30 characters</string>
+    <string name="dialog_title_balloon">Balloon of Content</string>
 </resources>

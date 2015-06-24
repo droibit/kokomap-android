@@ -22,6 +22,8 @@ import com.google.android.gms.maps.model.*
 import kotlin.properties.Delegates
 
 public val MSG_DROPPED_MARKER: Int = 1
+public val MSG_SNIPPET_OK: Int = 2
+public val MSG_SNIPPET_CANCEL: Int = 3
 
 public val FLOW_MARKER_DROP_ONLY: Int        = 1
 public val FLOW_MARKER_DROP_WITH_BALLON: Int = 2
@@ -115,15 +117,23 @@ public class MapController constructor(context: Context):
             mMarkerAnimator.drop(
                     marker         = marker,
                     flowType       = withBalloon.toDropFlow(),
-                    durationMillis = mContext.getInteger(R.integer.bouce_animation_millis).toLong())
+                    durationMillis = mContext.getInteger(R.integer.bouce_animation_millis).toLong()
+            )
         }
     }
 
     /**
      * アニメーションが終了して追加が完了したときに呼ばれる処理
      */
-    fun onDropMarkerFinish(marker: Marker, dropFlow: Int) {
+    fun onDropMarkerFinish(marker: Marker) {
 
+    }
+
+    /**
+     * 地図上からマーカーを削除します。
+     */
+    fun clearMarker() {
+        mMap?.let { it.clear() }
     }
 
     /**
