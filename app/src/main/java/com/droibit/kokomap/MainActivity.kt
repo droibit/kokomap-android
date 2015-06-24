@@ -76,9 +76,7 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        val id = item.getItemId()
-        //noinspection SimplifiableIfStatement
-        when (id) {
+        when (item.getItemId()) {
             R.id.action_settings  -> { return startSettingsActivity() }
             R.id.action_satellite -> { return changeMapType(item) }
         }
@@ -97,18 +95,8 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
      * マーカードロップボタンが押下された時の処理
      */
     fun onDropMarker(v: View) {
-        showToast(this, "DONE!!", Toast.LENGTH_SHORT)
-
-        mMapController.onDropMarker(withBalloon = false)
-
-        mFabMenu.close(true)
-    }
-
-    /**
-     * 吹き出し付きマーカードロップボタンが押下された時の処理
-     */
-    fun onDropMarkerWithBalloon(v: View) {
-        showToast(this, "BALLOON!!", Toast.LENGTH_SHORT)
+        val withBalloon = v.getId() == R.id.fab_balloon
+        mMapController.onDropMarker(withBalloon)
 
         mFabMenu.close(true)
     }

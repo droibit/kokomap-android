@@ -6,8 +6,10 @@ import android.os.Handler
 import android.os.Looper
 import android.support.annotation.WorkerThread
 import android.util.Log
+import com.droibit.easycreator.getInteger
 import com.droibit.easycreator.getLocationManager
 import com.droibit.kokomap.BuildConfig
+import com.droibit.kokomap.R
 import com.droibit.kokomap.extension.animateCamera
 import com.droibit.kokomap.extension.moveCamera
 import com.droibit.kokomap.model.MapRestorer
@@ -113,7 +115,7 @@ public class MapController constructor(context: Context):
             mMarkerAnimator.drop(
                     marker         = marker,
                     flowType       = withBalloon.toDropFlow(),
-                    durationMillis = 2000L)
+                    durationMillis = mContext.getInteger(R.integer.bouce_animation_millis).toLong())
         }
     }
 
