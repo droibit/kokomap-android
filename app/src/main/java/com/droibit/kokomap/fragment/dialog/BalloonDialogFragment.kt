@@ -21,6 +21,7 @@ import com.droibit.easycreator.sendMessage
 import com.droibit.kokomap.R
 import com.droibit.kokomap.model.MSG_SNIPPET_CANCEL
 import com.droibit.kokomap.model.MSG_SNIPPET_OK
+import com.droibit.kokomap.model.MSG_USER_RETAKE
 import kotlin.properties.Delegates
 
 /**
@@ -96,9 +97,7 @@ class BalloonDialogFragment: DialogFragment(), DialogInterface.OnClickListener {
                     obj  = mBalloonText.getText().toString()
                 }
             }
-            DialogInterface.BUTTON_NEGATIVE -> {
-                mHandler.sendEmptyMessage(MSG_SNIPPET_CANCEL)
-            }
+            DialogInterface.BUTTON_NEGATIVE -> { mHandler.sendEmptyMessage(MSG_USER_RETAKE) }
         }
     }
 

@@ -6,8 +6,7 @@
               android:layout_height="match_parent"
               android:paddingTop="@dimen/dialog_side_space"
               android:paddingLeft="@dimen/dialog_side_space"
-              android:paddingRight="@dimen/dialog_side_space"
-              android:paddingBottom="@dimen/dialog_bottom_space" >
+              android:paddingRight="@dimen/dialog_side_space" >
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"

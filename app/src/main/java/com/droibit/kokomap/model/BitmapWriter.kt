@@ -42,7 +42,7 @@ public class BitmapWriter constructor(context: Context) {
 
         val destFile = File(destDir, makeFilename(System.currentTimeMillis()))
         FileOutputStream(destFile).use { out ->
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
         }
         bitmap.recycle()
 
@@ -51,7 +51,7 @@ public class BitmapWriter constructor(context: Context) {
 
     /**
      * 現在の時刻に基づいたファイル名を作成する。
-     * 保存する際のファイル名は **kokomap_yyMMddhhmmss.png**
+     * 保存する際のファイル名は **kokomap_yyMMddhhmmss.jpg**
      */
     @VisibleForTesting
     fun makeFilename(currentTimeMillis: Long): String {

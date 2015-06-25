@@ -13,4 +13,8 @@
     <string name="google_maps_key" translatable="false"></string>
     <string name="dialog_title_balloon">吹き出しの内容</string>
     <string name="dialog_progress_save">地図画像を保存中 …</string>
+    <string name="text_done">完了</string>
+    <string name="text_retake">撮り直し</string>
+    <string name="text_save">保存</string>
+    <string name="dialog_title_preview">プレビュー</string>
 </resources>

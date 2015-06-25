@@ -55,6 +55,6 @@ public class BitmapWriterTest: InstrumentationTestCase() {
 
         val bitmapFile = File(bitmapFilePath)
         assertTrue(bitmapFile.name.startsWith("kokomap_"))
-        assertTrue(bitmapFile.name.endsWith(".png"))
+        assertTrue(bitmapFile.name.endsWith(".jpg"))
     }
 }

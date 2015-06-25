@@ -1,9 +1,11 @@
 package com.droibit.kokomap
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import android.support.annotation.MainThread
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
@@ -17,7 +19,7 @@ import com.github.clans.fab.FloatingActionMenu
 import com.google.android.gms.maps.SupportMapFragment
 import kotlin.properties.Delegates
 import com.droibit.kokomap.fragment.dialog.BalloonDialogFragment
-import com.droibit.kokomap.fragment.dialog.ProgressDialogFragment
+import com.droibit.kokomap.fragment.dialog.PreviewDialogFragment
 import com.droibit.kokomap.model.*
 import com.droibit.kokomap.utils.ResumeHandler
 import com.droibit.kokomap.utils.sendRunnableMessageDelayed
@@ -42,8 +44,6 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
 
     // バックグランド時にダイアログを操作しないためのハンドラー
     private val mHandler: ResumeHandler = ResumeHandler()
-
-    private var mProgressDialog: ProgressDialogFragment? = null
 
     /** {@inheritDoc} */
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,11 +94,13 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
     /** {@inheritDoc} */
     override fun handleMessage(msg: Message): Boolean {
         when (msg.what) {
-            MSG_DROPPED_MARKER -> onDropMarkerFinish(msg.obj as Marker, msg.arg1)
-            MSG_SNIPPET_CANCEL -> mMapController.clearMarker()
-            MSG_SNIPPET_OK     -> mMapController.onBalloonSnippetInputted(msg.obj.toString())
-            MSG_SNAPSHOT_START -> onMapSnapshotStart()
-            MSG_SNAPSHOT_END   -> onMapSnapshotEnd()
+            MSG_DROPPED_MARKER  -> onDropMarkerFinish(msg.obj as Marker, msg.arg1)
+            MSG_SNIPPET_CANCEL  -> onSnippetCancel()
+            MSG_SNIPPET_OK      -> onSnippetOk(msg.obj.toString())
+            MSG_SNAPSHOT_TOOK -> onMapSnapshotTook(msg.obj as Bitmap)
+            MSG_USER_COMPLETE   -> onUserCompleted(msg.obj as Bitmap)
+            MSG_USER_RETAKE     -> onUserRetake(msg.obj as Bitmap)
+            MSG_SNAPSHOT_SAVED  -> onMapSnapshotSaved(msg.obj as Boolean)
         }
         return true
     }
@@ -129,6 +131,7 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
     }
 
     // 吹き出しの追加が完了した時に呼ばれる処理
+    @MainThread
     private fun onDropMarkerFinish(marker: Marker, flowType: Int) {
         mMapController.marker = marker
 
@@ -140,30 +143,38 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
         mHandler.sendRunnableMessageDelayed(250L) { showBalloonDialog() }
     }
 
-    // 地図のスナップショットを撮りはじめる際に呼ばれる処理
-    private fun onMapSnapshotStart() {
-        mHandler.sendRunnableMessage { showProgressDialog() }
-    }
+    // スニペットの入力がキャンセルされた時に呼ばれる処理
+    @MainThread
+    private fun onSnippetCancel() = mMapController.clearMarker()
+
+    // スニペットの入力が完了した時に呼ばれる処理
+    @MainThread
+    private fun onSnippetOk(text: String) = mMapController.onSnippetInputted(text)
 
     // 地図のスナップショットを撮りえ終えた際に呼ばれる処理
-    private fun onMapSnapshotEnd() {
-        mHandler.sendRunnableMessage { dismissProgressDialog() }
+    @MainThread
+    private fun onMapSnapshotTook(snapshot: Bitmap) {
+        showPreviewDialog(snapshot)
+
+        mHandler.postDelayed(250L) { mMapController.clearMarker() }
     }
+
+    // 一連の処理が完了した時に呼ばれる処理
+    @MainThread
+    private fun onUserCompleted(bitmap: Bitmap) = mMapController.saveSnapshot(bitmap)
+
+    // スナップショットの保存が終わった時に呼ばれる処理
+    @MainThread
+    private fun onMapSnapshotSaved(hasError: Boolean) {
+
+    }
+
+    // ユーザが撮り直しを選択した時に呼ばれる処理
+    @MainThread
+    private fun onUserRetake(bitmap: Bitmap) = bitmap.recycle()
 
     // 吹き出しスニペット入力用ダイアログを表示する
     private fun showBalloonDialog() = BalloonDialogFragment().show(getSupportFragmentManager())
-
-    // プログレスダイアログを表示する
-    private fun showProgressDialog() {
-        mProgressDialog = ProgressDialogFragment()
-        mProgressDialog?.show(getSupportFragmentManager())
-    }
-
-    // プログレスダイアログを非表示にする
-    private fun dismissProgressDialog() {
-        mProgressDialog?.let {
-            it.dismiss()
-            mProgressDialog = null
-        }
-    }
+    // スナップショットのプレビューダイアログを表示する
+    private fun showPreviewDialog(snapshot: Bitmap) = PreviewDialogFragment.newInstance(snapshot, false).show(getSupportFragmentManager())
 }

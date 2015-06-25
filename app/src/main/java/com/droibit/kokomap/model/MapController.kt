@@ -1,14 +1,19 @@
 package com.droibit.kokomap.model
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.location.LocationManager
+import android.os.AsyncTask
 import android.os.Handler
 import android.os.Looper
+import android.support.annotation.MainThread
 import android.support.annotation.WorkerThread
+import android.text.TextUtils
 import android.util.Log
 import com.droibit.easycreator.getInteger
 import com.droibit.easycreator.getLocationManager
 import com.droibit.easycreator.postDelayed
+import com.droibit.easycreator.sendMessage
 import com.droibit.kokomap.BuildConfig
 import com.droibit.kokomap.R
 import com.droibit.kokomap.extension.animateCamera
@@ -20,13 +25,16 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
+import java.io.IOException
 import kotlin.properties.Delegates
 
-public val MSG_DROPPED_MARKER: Int = 1
-public val MSG_SNIPPET_OK:     Int = 2
-public val MSG_SNIPPET_CANCEL: Int = 3
-public val MSG_SNAPSHOT_START: Int = 4
-public val MSG_SNAPSHOT_END:   Int = 5
+public val MSG_DROPPED_MARKER:  Int = 1
+public val MSG_SNIPPET_OK:      Int = 2
+public val MSG_SNIPPET_CANCEL:  Int = 3
+public val MSG_SNAPSHOT_TOOK:   Int = 4
+public val MSG_USER_COMPLETE:   Int = 5 // ユーザが完了を選択した
+public val MSG_USER_RETAKE:     Int = 6
+public val MSG_SNAPSHOT_SAVED:  Int = 7
 
 public val FLOW_MARKER_DROP_ONLY: Int        = 1
 public val FLOW_MARKER_DROP_WITH_BALLON: Int = 2
@@ -53,6 +61,7 @@ public class MapController constructor(context: Context):
     private val mRestorer = MapRestorer(context)
     private val mSnapshooter = Snapshooter(mHandler)
     private val mMarkerAnimator = MarkerAnimator(context as Handler.Callback)
+    private val mBitmapWriter = BitmapWriter(context)
 
     private var mMap: GoogleMap? = null
     private var mCenterPosition: LatLng? = null
@@ -132,7 +141,7 @@ public class MapController constructor(context: Context):
     /**
      * 吹き出しのスニペットの内容が入力されたら呼ばれる処理
      */
-    fun onBalloonSnippetInputted(text: String) {
+    fun onSnippetInputted(text: String) {
         // スニペットが入力されたら地図上で表示します。
         marker?.let {
             it.setTitle(mContext.getString(R.string.marker_title))
@@ -140,8 +149,7 @@ public class MapController constructor(context: Context):
             it.showInfoWindow()
         }
 
-        // あまり早く切り替わると違和感があるので遅延を入れる
-        mHandler.postDelayed(250L) { snapshot() }
+        mHandler.postDelayed(300L) { snapshot() }
     }
 
     /**
@@ -149,6 +157,30 @@ public class MapController constructor(context: Context):
      */
     fun snapshot() {
         mSnapshooter.snapshot(mMap!!)
+    }
+
+    /**
+     * スナップショットを内部ストレージに保存する
+     */
+    fun saveSnapshot(snapshot: Bitmap) {
+        val task = object: AsyncTask<Bitmap, Void, String>() {
+            override fun doInBackground(vararg params: Bitmap): String? {
+                try {
+                    return mBitmapWriter.write(params.first())
+                } catch (e: IOException) {
+                    if (BuildConfig.DEBUG) Log.e(BuildConfig.BUILD_TYPE, "bitmap save error: ", e)
+                }
+                return null
+            }
+
+            override fun onPostExecute(result: String?) {
+                mHandler.sendMessage {
+                    what = MSG_SNAPSHOT_SAVED
+                    obj  = !TextUtils.isEmpty(result)
+                }
+            }
+        }
+        task.execute(snapshot)
     }
 
     /**
