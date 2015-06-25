@@ -8,6 +8,7 @@ import android.support.annotation.WorkerThread
 import android.util.Log
 import com.droibit.easycreator.getInteger
 import com.droibit.easycreator.getLocationManager
+import com.droibit.easycreator.postDelayed
 import com.droibit.kokomap.BuildConfig
 import com.droibit.kokomap.R
 import com.droibit.kokomap.extension.animateCamera
@@ -22,8 +23,10 @@ import com.google.android.gms.maps.model.*
 import kotlin.properties.Delegates
 
 public val MSG_DROPPED_MARKER: Int = 1
-public val MSG_SNIPPET_OK: Int = 2
+public val MSG_SNIPPET_OK:     Int = 2
 public val MSG_SNIPPET_CANCEL: Int = 3
+public val MSG_SNAPSHOT_START: Int = 4
+public val MSG_SNAPSHOT_END:   Int = 5
 
 public val FLOW_MARKER_DROP_ONLY: Int        = 1
 public val FLOW_MARKER_DROP_WITH_BALLON: Int = 2
@@ -48,10 +51,14 @@ public class MapController constructor(context: Context):
     private val mContext = context
     private val mHandler = Handler(Looper.getMainLooper(), context as Handler.Callback)
     private val mRestorer = MapRestorer(context)
+    private val mSnapshooter = Snapshooter(mHandler)
     private val mMarkerAnimator = MarkerAnimator(context as Handler.Callback)
 
     private var mMap: GoogleMap? = null
     private var mCenterPosition: LatLng? = null
+
+    // 中心に表示したマーカー
+    var marker: Marker? = null
 
     /** {@inheritDoc} */
     @WorkerThread
@@ -89,7 +96,7 @@ public class MapController constructor(context: Context):
      * @param satellite trueの場合は衛星写真に変更する
      * @return trueの場合は変更、falseの場合は変更していない（地図の準備がまだ）
      */
-    fun onMapTypeChanged(satellite: Boolean): Boolean {
+    fun onMapTypeChange(satellite: Boolean): Boolean {
         mMap?.let {
             it.setMapType(satellite.toMapType())
             return true
@@ -123,17 +130,33 @@ public class MapController constructor(context: Context):
     }
 
     /**
-     * アニメーションが終了して追加が完了したときに呼ばれる処理
+     * 吹き出しのスニペットの内容が入力されたら呼ばれる処理
      */
-    fun onDropMarkerFinish(marker: Marker) {
+    fun onBalloonSnippetInputted(text: String) {
+        // スニペットが入力されたら地図上で表示します。
+        marker?.let {
+            it.setTitle(mContext.getString(R.string.marker_title))
+            it.setSnippet(text)
+            it.showInfoWindow()
+        }
 
+        // あまり早く切り替わると違和感があるので遅延を入れる
+        mHandler.postDelayed(250L) { snapshot() }
+    }
+
+    /**
+     * 地図のスナップショットを撮る
+     */
+    fun snapshot() {
+        mSnapshooter.snapshot(mMap!!)
     }
 
     /**
      * 地図上からマーカーを削除します。
      */
     fun clearMarker() {
-        mMap?.let { it.clear() }
+        mMap?.clear()
+        marker = null
     }
 
     /**
@@ -147,7 +170,7 @@ public class MapController constructor(context: Context):
         val ll = lm?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
 
         var camera = if (ll != null) {
-            RestorableCamera(ll.getLatitude(), ll.getLongitude(), MapRestorer.Companion.EXPAND_ZOOM)
+                        RestorableCamera(ll.getLatitude(), ll.getLongitude(), MapRestorer.Companion.EXPAND_ZOOM)
                      } else {
                         mRestorer.restore()
                      }

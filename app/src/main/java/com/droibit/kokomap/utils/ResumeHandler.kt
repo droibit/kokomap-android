@@ -5,7 +5,9 @@ import android.os.Message
 import java.util.*
 
 /**
- * ActivityもしくはFragmentのレジューム時に処理をフックするためのハンドラ。
+ * ActivityもしくはFragmentのレジューム時に処理を遅延させるためのハンドラ。
+ * アプリがバックグランドにある状態でダイアログフラグメントを操作すると例外が
+ * 発生するのでその対策として使用する。
  *
  * 参考:
  * [StackOverFlow](http://stackoverflow.com/questions/8040280/how-to-handle-handler-messages-when-activity-fragment-is-paused)
@@ -20,7 +22,7 @@ public open class ResumeHandler(): Handler() {
     /**
      * ライフサイクルのレジュームの際にメッセージがあれば処理する。
      */
-    public fun resume() {
+    public fun onResume() {
         mPaused = false
 
         if (!mMessageQueue.isEmpty()) {
@@ -32,7 +34,7 @@ public open class ResumeHandler(): Handler() {
     /**
      * ライフサイクルのポーズ時に必ず呼ぶ。
      */
-    public fun pause() {
+    public fun onPause() {
         mPaused = true
     }
 
@@ -66,4 +68,16 @@ public open class ResumeHandler(): Handler() {
             e.printStackTrace()
         }
     }
+}
+
+public fun ResumeHandler.sendRunnableMessage(runDelegate: ()->Unit) {
+    val msg = obtainMessage()
+    msg.obj = Runnable { runDelegate }
+    sendMessage(msg)
+}
+
+public fun ResumeHandler.sendRunnableMessageDelayed(delayMillis: Long, runDelegate: ()->Unit) {
+    val msg = obtainMessage()
+    msg.obj = Runnable { runDelegate() }
+    sendMessageDelayed(msg, delayMillis)
 }

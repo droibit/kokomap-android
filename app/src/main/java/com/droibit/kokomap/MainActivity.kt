@@ -11,17 +11,17 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import butterknife.bindView
-import com.droibit.easycreator.postDelayed
-import com.droibit.easycreator.sendMessageDelayed
-import com.droibit.easycreator.showToast
+import com.droibit.easycreator.*
 import com.github.clans.fab.FloatingActionButton
 import com.github.clans.fab.FloatingActionMenu
 import com.google.android.gms.maps.SupportMapFragment
 import kotlin.properties.Delegates
-import com.droibit.easycreator.startActivity
-import com.droibit.kokomap.fragment.BalloonDialogFragment
+import com.droibit.kokomap.fragment.dialog.BalloonDialogFragment
+import com.droibit.kokomap.fragment.dialog.ProgressDialogFragment
 import com.droibit.kokomap.model.*
 import com.droibit.kokomap.utils.ResumeHandler
+import com.droibit.kokomap.utils.sendRunnableMessageDelayed
+import com.droibit.kokomap.utils.sendRunnableMessage
 import com.google.android.gms.maps.model.Marker
 
 
@@ -43,6 +43,8 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
     // バックグランド時にダイアログを操作しないためのハンドラー
     private val mHandler: ResumeHandler = ResumeHandler()
 
+    private var mProgressDialog: ProgressDialogFragment? = null
+
     /** {@inheritDoc} */
     override fun onCreate(savedInstanceState: Bundle?) {
         super<AppCompatActivity>.onCreate(savedInstanceState)
@@ -59,14 +61,15 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
     override fun onResume() {
         super<AppCompatActivity>.onResume()
 
-        mHandler.resume()
+        mHandler.onResume()
     }
 
     /** {@inheritDoc} */
     override fun onPause() {
         super<AppCompatActivity>.onPause()
 
-        mHandler.pause()
+        mHandler.onPause()
+        mMapController.onPause()
     }
 
     /** {@inheritDoc} */
@@ -93,6 +96,9 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
         when (msg.what) {
             MSG_DROPPED_MARKER -> onDropMarkerFinish(msg.obj as Marker, msg.arg1)
             MSG_SNIPPET_CANCEL -> mMapController.clearMarker()
+            MSG_SNIPPET_OK     -> mMapController.onBalloonSnippetInputted(msg.obj.toString())
+            MSG_SNAPSHOT_START -> onMapSnapshotStart()
+            MSG_SNAPSHOT_END   -> onMapSnapshotEnd()
         }
         return true
     }
@@ -115,7 +121,7 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
 
     // GoogleMapが表示する地図の種類を変更する
     private fun changeMapType(item: MenuItem): Boolean {
-        if (mMapController.onMapTypeChanged(!item.isChecked())) {
+        if (mMapController.onMapTypeChange(!item.isChecked())) {
             item.setChecked(!item.isChecked())
             return true
         }
@@ -124,14 +130,40 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
 
     // 吹き出しの追加が完了した時に呼ばれる処理
     private fun onDropMarkerFinish(marker: Marker, flowType: Int) {
+        mMapController.marker = marker
+
+        // 吹き出しを表示しない場合はスナップショットへ移る
         if (flowType == FLOW_MARKER_DROP_ONLY) {
-            mMapController.onDropMarkerFinish(marker)
+            mMapController.snapshot()
             return
         }
+        mHandler.sendRunnableMessageDelayed(250L) { showBalloonDialog() }
+    }
 
-        // 吹き出し内容を入力するためのダイアログを表示する
-        mHandler.sendMessageDelayed(250L) {
-            obj = Runnable { BalloonDialogFragment().show(getSupportFragmentManager()) }
+    // 地図のスナップショットを撮りはじめる際に呼ばれる処理
+    private fun onMapSnapshotStart() {
+        mHandler.sendRunnableMessage { showProgressDialog() }
+    }
+
+    // 地図のスナップショットを撮りえ終えた際に呼ばれる処理
+    private fun onMapSnapshotEnd() {
+        mHandler.sendRunnableMessage { dismissProgressDialog() }
+    }
+
+    // 吹き出しスニペット入力用ダイアログを表示する
+    private fun showBalloonDialog() = BalloonDialogFragment().show(getSupportFragmentManager())
+
+    // プログレスダイアログを表示する
+    private fun showProgressDialog() {
+        mProgressDialog = ProgressDialogFragment()
+        mProgressDialog?.show(getSupportFragmentManager())
+    }
+
+    // プログレスダイアログを非表示にする
+    private fun dismissProgressDialog() {
+        mProgressDialog?.let {
+            it.dismiss()
+            mProgressDialog = null
         }
     }
 }

@@ -17,4 +17,5 @@
     <string name="marker_title">Here</string>
     <string name="marker_snippet_hint">30 characters</string>
     <string name="dialog_title_balloon">Balloon of Content</string>
+    <string name="dialog_progress_save">Saving the map image …</string>
 </resources>
