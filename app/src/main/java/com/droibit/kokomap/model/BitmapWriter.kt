@@ -42,7 +42,7 @@ public class BitmapWriter constructor(context: Context) {
 
         val destFile = File(destDir, makeFilename(System.currentTimeMillis()))
         FileOutputStream(destFile).use { out ->
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 85, out)
         }
         bitmap.recycle()
 

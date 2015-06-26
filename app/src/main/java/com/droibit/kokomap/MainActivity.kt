@@ -170,7 +170,7 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
     @MainThread
     private fun onMapSnapshotSaved(hasError: Boolean) {
         var resId = if (!hasError) R.string.snackbar_saved else R.string.snackbar_failed_save
-        showSnackbar(mRootView, resId, Snackbar.LENGTH_SHORT)
+        showSnackbar(mRootView, resId, Snackbar.LENGTH_LONG)
     }
 
     // ユーザが撮り直しを選択した時に呼ばれる処理
