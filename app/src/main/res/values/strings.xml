@@ -22,4 +22,6 @@
     <string name="text_retake">Retake</string>
     <string name="text_save">Save</string>
     <string name="dialog_title_preview">Preview</string>
+    <string name="snackbar_saved">Saved</string>
+    <string name="snackbar_failed_save">Failed to save</string>
 </resources>

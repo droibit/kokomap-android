@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import android.support.annotation.MainThread
+import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
@@ -14,6 +15,7 @@ import android.view.View
 import android.widget.Toast
 import butterknife.bindView
 import com.droibit.easycreator.*
+import com.droibit.kokomap.extension.showSnackbar
 import com.github.clans.fab.FloatingActionButton
 import com.github.clans.fab.FloatingActionMenu
 import com.google.android.gms.maps.SupportMapFragment
@@ -41,6 +43,7 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
     // [SupportMapFragment]のデリゲート
     private val mMapController: MapController by Delegates.lazy { MapController(this) }
     private val mFabMenu: FloatingActionMenu by bindView(R.id.fab_menu)
+    private val mRootView: View by bindView(R.id.root)
 
     // バックグランド時にダイアログを操作しないためのハンドラー
     private val mHandler: ResumeHandler = ResumeHandler()
@@ -94,13 +97,13 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
     /** {@inheritDoc} */
     override fun handleMessage(msg: Message): Boolean {
         when (msg.what) {
-            MSG_DROPPED_MARKER  -> onDropMarkerFinish(msg.obj as Marker, msg.arg1)
-            MSG_SNIPPET_CANCEL  -> onSnippetCancel()
-            MSG_SNIPPET_OK      -> onSnippetOk(msg.obj.toString())
-            MSG_SNAPSHOT_TOOK -> onMapSnapshotTook(msg.obj as Bitmap)
-            MSG_USER_COMPLETE   -> onUserCompleted(msg.obj as Bitmap)
-            MSG_USER_RETAKE     -> onUserRetake(msg.obj as Bitmap)
-            MSG_SNAPSHOT_SAVED  -> onMapSnapshotSaved(msg.obj as Boolean)
+            MSG_DROPPED_MARKER -> onDropMarkerFinish(msg.obj as Marker, msg.arg1)
+            MSG_SNIPPET_CANCEL -> onSnippetCancel()
+            MSG_SNIPPET_OK     -> onSnippetOk(msg.obj.toString())
+            MSG_SNAPSHOT_TOOK  -> onMapSnapshotTook(msg.obj as Bitmap)
+            MSG_USER_COMPLETE  -> onUserCompleted(msg.obj as Bitmap)
+            MSG_USER_RETAKE    -> onUserRetake(msg.obj as Bitmap)
+            MSG_SNAPSHOT_SAVED -> onMapSnapshotSaved(msg.obj as Boolean)
         }
         return true
     }
@@ -166,7 +169,8 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
     // スナップショットの保存が終わった時に呼ばれる処理
     @MainThread
     private fun onMapSnapshotSaved(hasError: Boolean) {
-
+        var resId = if (!hasError) R.string.snackbar_saved else R.string.snackbar_failed_save
+        showSnackbar(mRootView, resId, Snackbar.LENGTH_SHORT)
     }
 
     // ユーザが撮り直しを選択した時に呼ばれる処理

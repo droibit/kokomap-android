@@ -17,4 +17,6 @@
     <string name="text_retake">撮り直し</string>
     <string name="text_save">保存</string>
     <string name="dialog_title_preview">プレビュー</string>
+    <string name="snackbar_saved">保存完了</string>
+    <string name="snackbar_failed_save">保存に失敗</string>
 </resources>
