@@ -7,6 +7,7 @@ import android.support.annotation.StringRes
 import android.view.View
 import com.droibit.kokomap.BuildConfig
 import com.droibit.kokomap.R
+import com.droibit.kokomap.fragment.dialog.LicensesDialogFragment
 import com.droibit.kokomap.model.BitmapWriter
 
 /**
@@ -33,7 +34,16 @@ public class SettingsFragment: PreferenceFragment() {
 
         val prefVersion = findPreference(R.string.pref_summary_version_key)
         prefVersion.setSummary(getString(R.string.pref_summary_version_summary, BuildConfig.VERSION_NAME))
+
+        findPreference(R.string.pref_summary_oss_key).setOnPreferenceClickListener {
+            showLicensesDialog()
+        }
     }
 
     private fun findPreference(@StringRes resId: Int) = findPreference(getString(resId))
+
+    private fun showLicensesDialog(): Boolean {
+        LicensesDialogFragment().show(getFragmentManager())
+        return true
+    }
 }

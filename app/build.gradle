@@ -51,18 +51,23 @@ dependencies {
     compile "com.android.support:support-annotations:$support_lib_version"
     compile "com.android.support:appcompat-v7:$support_lib_version"
     compile 'com.google.android.gms:play-services-maps:7.5.0'
-    compile 'de.psdev.licensesdialog:licensesdialog:1.7.0'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "com.android.support:design:$support_lib_version"
     compile 'com.github.clans:fab:1.5.0'
     compile 'com.github.droibit:trimmin:0.1.1'
+
     compile('com.droibit:easycreator:0.3.7@aar') {
         transitive = false
     }
     compile('com.jakewharton:kotterknife:0.1.0-SNAPSHOT') {
         transitive = false
     }
+    compile('de.psdev.licensesdialog:licensesdialog:1.8.0-SNAPSHOT') {
+        transitive = false
+    }
+
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'
+
     androidTestCompile 'com.android.support.test:testing-support-lib:0.1'
 }

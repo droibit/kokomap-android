@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<notices>
+    <notice>
+        <name>FloatingActionButton</name>
+        <url>https://github.com/Clans/FloatingActionButton</url>
+        <copyright>Copyright 2015 Dmytro Tarianyk</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+
+    <notice>
+        <name>Kotter Knife</name>
+        <url>https://github.com/JakeWharton/kotterknife</url>
+        <copyright>Copyright 2014 Jake Wharton</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+
+    <notice>
+        <name>LeakCanary</name>
+        <url>https://github.com/square/leakcanary</url>
+        <copyright>Copyright 2015 Square, Inc</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+
+    <notice>
+        <name>LicensesDialog</name>
+        <url>https://github.com/PSDev/LicensesDialog</url>
+        <copyright>Copyright 2013 Philip Schiffer</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+</notices>
