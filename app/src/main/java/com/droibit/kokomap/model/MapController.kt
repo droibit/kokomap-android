@@ -176,7 +176,7 @@ public class MapController constructor(context: Context):
             override fun onPostExecute(result: String?) {
                 mHandler.sendMessage {
                     what = MSG_SNAPSHOT_SAVED
-                    obj  = TextUtils.isEmpty(result)
+                    obj  = result
                 }
             }
         }

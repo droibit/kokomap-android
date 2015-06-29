@@ -22,6 +22,14 @@ public class BitmapWriter constructor(context: Context) {
 
     companion object {
         val sDateFormatter = SimpleDateFormat("yyMMddHHmmss")
+
+        /**
+         * 画像ファイルの保存先ディレクトリを取得する
+         */
+        fun getDestinationDir(context: Context): File {
+            val picDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+            return File(picDir, context.getString(R.string.dest_dir))
+        }
     }
 
     private val mContext = context
@@ -57,13 +65,5 @@ public class BitmapWriter constructor(context: Context) {
     fun makeFilename(currentTimeMillis: Long): String {
         val date = Date(currentTimeMillis)
         return mContext.getString(R.string.dest_file_name, sDateFormatter.format(date))
-    }
-
-    /**
-     * 画像ファイルの保存先ディレクトリを取得する
-     */
-    private fun getDestinationDir(context: Context): File {
-        val picDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-        return File(picDir, context.getString(R.string.dest_dir))
     }
 }

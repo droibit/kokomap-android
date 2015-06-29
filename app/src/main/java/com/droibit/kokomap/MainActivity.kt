@@ -1,6 +1,9 @@
 package com.droibit.kokomap
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -9,6 +12,7 @@ import android.support.annotation.MainThread
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -27,6 +31,7 @@ import com.droibit.kokomap.utils.ResumeHandler
 import com.droibit.kokomap.utils.sendRunnableMessageDelayed
 import com.droibit.kokomap.utils.sendRunnableMessage
 import com.google.android.gms.maps.model.Marker
+import java.io.File
 
 
 /**
@@ -47,6 +52,8 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
 
     // バックグランド時にダイアログを操作しないためのハンドラー
     private val mHandler: ResumeHandler = ResumeHandler()
+    // 他アプリから起動したかどうか
+    private var launchedPickMode = false
 
     /** {@inheritDoc} */
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,6 +65,11 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
         setSupportActionBar(toolbar)
 
         mMapFragment.getMapAsync(mMapController)
+
+        // 他アプリから起動したかどうか
+        if (Intent.ACTION_GET_CONTENT == getIntent()?.getAction()) {
+            launchedPickMode = true
+        }
     }
 
     /** {@inheritDoc} */
@@ -103,7 +115,7 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
             MSG_SNAPSHOT_TOOK  -> onMapSnapshotTook(msg.obj as Bitmap)
             MSG_USER_COMPLETE  -> onUserCompleted(msg.obj as Bitmap)
             MSG_USER_RETAKE    -> onUserRetake(msg.obj as Bitmap)
-            MSG_SNAPSHOT_SAVED -> onMapSnapshotSaved(msg.obj as Boolean)
+            MSG_SNAPSHOT_SAVED -> onMapSnapshotSaved(msg.obj as String)
         }
         return true
     }
@@ -168,9 +180,23 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
 
     // スナップショットの保存が終わった時に呼ばれる処理
     @MainThread
-    private fun onMapSnapshotSaved(hasError: Boolean) {
-        var resId = if (!hasError) R.string.snackbar_saved else R.string.snackbar_failed_save
-        showSnackbar(mRootView, resId, Snackbar.LENGTH_LONG)
+    private fun onMapSnapshotSaved(filePath: String) {
+        val hasError = TextUtils.isEmpty(filePath)
+        var resId = if (hasError) R.string.snackbar_failed_save else R.string.snackbar_saved
+        // 通常起動の場合
+        if (!launchedPickMode) {
+            showSnackbar(mRootView, resId, Snackbar.LENGTH_LONG)
+            return
+        }
+
+        // スナップショットの保存に失敗した場合
+        if (hasError) {
+            setResult(Activity.RESULT_CANCELED)
+        } else {
+            val intent = Intent().setData(Uri.fromFile(File(filePath)))
+            setResult(Activity.RESULT_OK, intent)
+        }
+        finish()
     }
 
     // ユーザが撮り直しを選択した時に呼ばれる処理
@@ -180,5 +206,6 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
     // 吹き出しスニペット入力用ダイアログを表示する
     private fun showBalloonDialog() = BalloonDialogFragment().show(getSupportFragmentManager())
     // スナップショットのプレビューダイアログを表示する
-    private fun showPreviewDialog(snapshot: Bitmap) = PreviewDialogFragment.newInstance(snapshot, false).show(getSupportFragmentManager())
+    private fun showPreviewDialog(snapshot: Bitmap) = PreviewDialogFragment.newInstance(snapshot, launchedPickMode)
+                                                                           .show(getSupportFragmentManager())
 }

@@ -29,7 +29,7 @@ public class SettingsFragment: PreferenceFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val prefDestDir = findPreference(R.string.pref_app_dest_folder_key)
-        prefDestDir.setSummary("/${Environment.DIRECTORY_PICTURES}/${getString(R.string.dest_dir)}")
+        prefDestDir.setSummary("/sdcard/${Environment.DIRECTORY_PICTURES}/${getString(R.string.dest_dir)}")
 
         val prefVersion = findPreference(R.string.pref_summary_version_key)
         prefVersion.setSummary(getString(R.string.pref_summary_version_summary, BuildConfig.VERSION_NAME))

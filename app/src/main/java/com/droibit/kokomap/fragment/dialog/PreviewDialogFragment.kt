@@ -31,17 +31,17 @@ class PreviewDialogFragment: DialogFragment(), DialogInterface.OnClickListener {
         val TAG_DIALOG = "preview_dialog"
 
         private val ARG_SNAPSHOT = "snapshot"
-        private val ARG_LAUNCHED_OTHER_APP = "launch"
+        private val ARG_LAUNCHED_PICK_MODE = "pick_mode"
 
         /**
          * 新しいインスタンスを作成する
          *
          * @param snapshot 表示するビットマップ
-         * @param launchedOtherApp 他アプリから起動しているか
+         * @param launchedPickMode 他アプリから起動しているか
          */
-        fun newInstance(snapshot: Bitmap, launchedOtherApp: Boolean): PreviewDialogFragment = fragment { args ->
+        fun newInstance(snapshot: Bitmap, launchedPickMode: Boolean): PreviewDialogFragment = fragment { args ->
             args.putParcelable(ARG_SNAPSHOT, snapshot)
-            args.putBoolean(ARG_LAUNCHED_OTHER_APP, launchedOtherApp)
+            args.putBoolean(ARG_LAUNCHED_PICK_MODE, launchedPickMode)
         }
     }
 
@@ -63,9 +63,9 @@ class PreviewDialogFragment: DialogFragment(), DialogInterface.OnClickListener {
         val imageView = view.findViewById(R.id.image) as ImageView
         imageView.setImageBitmap(getArguments().getParcelable(ARG_SNAPSHOT))
 
-        val positiveRes = if (getArguments().getBoolean(ARG_LAUNCHED_OTHER_APP, false))
+        val positiveRes = if (getArguments().getBoolean(ARG_LAUNCHED_PICK_MODE, false))
                             R.string.text_done
-                       else
+                          else
                             R.string.text_save
 
         return AlertDialog.Builder(getActivity())
