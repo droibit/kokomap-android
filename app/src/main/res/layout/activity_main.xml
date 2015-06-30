@@ -22,19 +22,22 @@
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:theme="@style/AppTheme"/>
 
-        <fragment
-            android:id="@+id/map"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:name="com.google.android.gms.maps.SupportMapFragment" />
+        <FrameLayout android:layout_width="match_parent"
+                     android:layout_height="match_parent">
+
+            <fragment android:id="@+id/map"
+                      android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:name="com.google.android.gms.maps.SupportMapFragment" />
+
+            <ImageView android:src="@drawable/ic_center"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:layout_gravity="center"  />
+
+        </FrameLayout>
 
     </LinearLayout>
-
-    <ImageView
-        android:src="@drawable/ic_center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center" />
 
     <com.droibit.kokomap.view.FloatingActionMenu
         android:id="@+id/fab_menu"
