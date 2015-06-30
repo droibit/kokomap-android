@@ -12,7 +12,10 @@ import java.util.*
  * GoogleMapsのスナップショットを撮るためのクラス。
  * 撮れたビットマップはメインのアクティビティに送信する
  *
- * Created by kumagai on 2015/06/25.
+ * @author kumagai
+ *
+ * @constructor 新しいインスタンスを生成する
+ * @param handler UIスレッドのハンドラ
  */
 class Snapshooter constructor(handler: Handler) {
     private val mHandler = handler

@@ -25,26 +25,26 @@ class MarkerAnimator constructor(callback: Handler.Callback) {
     /**
      * アニメーション付きで地図にマーカーを落とす。
      *
-     * @param marker 対象のマーカー
+     * @param target 対象のマーカー
      * @param flowType マーカー追加後のフローの種類
      * @param durationMillis アニメーション時間
      */
-    fun drop(marker: Marker, flowType: Int, durationMillis: Long) {
+    fun drop(target: Marker, flowType: Int, durationMillis: Long) {
         isAnimating = true
 
         mHandler.post {
             val elapsedMillis = SystemClock.uptimeMillis() - startMillis
             val t = Math.max(1f - interpolator.getInterpolation((elapsedMillis.toFloat() / durationMillis)), 0f)
-            marker.setAnchor(.5f, 1f + 10f * t)
+            target.setAnchor(.5f, 1f + 10f * t)
 
             if (t > 0f) {
                 mHandler.postDelayed(this, 15L);
                 return@post
             }
-            marker.setAnchor(.5f, 1f)
+            target.setAnchor(.5f, 1f)
             mHandler.sendMessage {
                 what = MSG_DROPPED_MARKER
-                obj  = marker
+                obj  = target
                 arg1 = flowType
             }
             isAnimating = false

@@ -17,6 +17,9 @@ import java.util.*
  *
  * @auther kumagai
  * @since 15/06/22
+ *
+ * @constructor 新しいインスタンスを生成する
+ * @param context コンテキスト
  */
 public class BitmapWriter constructor(context: Context) {
 

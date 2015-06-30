@@ -81,15 +81,11 @@ public class MapController constructor(context: Context):
 
     /** {@inheritDoc} */
     override fun onCameraChange(camera: CameraPosition) {
-        Log.d(BuildConfig.BUILD_TYPE, "lat: ${camera.target.latitude}, lon: ${camera.target.longitude}, zoom: ${camera.zoom}")
+        if (BuildConfig.DEBUG) {
+            Log.d(BuildConfig.BUILD_TYPE, "lat: ${camera.target.latitude}, lon: ${camera.target.longitude}, zoom: ${camera.zoom}")
+        }
 
         mCenterPosition = camera.target
-    }
-
-    /**
-     * ライフサイクルの#onResume 時に呼ぶ
-     */
-    fun onResume() {
     }
 
     /**
@@ -131,7 +127,7 @@ public class MapController constructor(context: Context):
                                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
             )
             mMarkerAnimator.drop(
-                    marker         = marker,
+                    target         = marker,
                     flowType       = withBalloon.toDropFlow(),
                     durationMillis = mContext.getInteger(R.integer.bouce_animation_millis).toLong()
             )

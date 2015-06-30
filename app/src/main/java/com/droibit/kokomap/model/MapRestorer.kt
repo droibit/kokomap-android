@@ -18,6 +18,9 @@ import com.google.android.gms.maps.model.LatLng
  *
  * @auther kumagai
  * @since 15/06/08
+ *
+ * @constructor 新しいインスタンスを作成します。
+ * @param context コンテキスト
  */
 class MapRestorer constructor(context: Context) {
 

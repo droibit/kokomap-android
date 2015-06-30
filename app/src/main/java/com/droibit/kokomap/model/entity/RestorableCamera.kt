@@ -6,7 +6,12 @@ import com.google.android.gms.maps.model.LatLng
 /**
  * 地図の状態を保存/復元するための最小限のカメラ情報を格納する
  *
- * Created by kumagai on 2015/06/18.
+ * @author kumagai
+ *
+ * @constructor 新しいインスタンスを作成します。
+ * @param lat 地図の緯度
+ * @param lng 地図の経度
+ * @param zoom 地図の拡大率
  */
 public @data class RestorableCamera constructor(lat: Double, lng: Double, zoom: Float) {
 
