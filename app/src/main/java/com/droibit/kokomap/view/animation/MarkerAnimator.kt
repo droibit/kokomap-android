@@ -41,13 +41,13 @@ class MarkerAnimator constructor(callback: Handler.Callback) {
                 mHandler.postDelayed(this, 15L);
                 return@post
             }
+            marker.setAnchor(.5f, 1f)
             mHandler.sendMessage {
                 what = MSG_DROPPED_MARKER
                 obj  = marker
                 arg1 = flowType
             }
             isAnimating = false
-            marker.showInfoWindow()
         }
     }
 }
