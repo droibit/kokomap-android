@@ -31,7 +31,7 @@ class MediaRegistrant constructor(context: Context) {
      * @param filePath 画像ファイルのパス
      * @return 登録後の画像ファイルのURI（content://...)
      */
-    public fun regist(filePath: String): Uri {
+    public fun register(filePath: String): Uri? {
         return mContext.getContentResolver().insertExternalContent {
             val imgFile = File(filePath)
             put(MediaColumns.TITLE, imgFile.name)

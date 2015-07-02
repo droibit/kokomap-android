@@ -1,6 +1,9 @@
 package com.droibit.kokomap.model
 
 import android.graphics.Bitmap
+import android.net.Uri
+import android.provider.MediaStore
+import android.provider.MediaStore.MediaColumns
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
 import android.test.InstrumentationTestCase
@@ -9,8 +12,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import kotlin.properties.Delegates
 import junit.framework.Assert.*
+import org.junit.After
 import org.junit.Before
 import java.io.File
+import java.util.*
 
 /**
  * [BitmapWriter] クラスの単体テスト
@@ -32,6 +37,7 @@ public class BitmapWriterTest: InstrumentationTestCase() {
 
         mWriter = BitmapWriter(getInstrumentation().getTargetContext())
     }
+
 
     @Test
     public fun testFilename() {
@@ -59,7 +65,26 @@ public class BitmapWriterTest: InstrumentationTestCase() {
     }
 
     @Test
-    public fun testRegistMediaStore() {
-        // TODO:
+    public fun testRegisterMediaStore() {
+        val bitmap = Bitmap.createBitmap(1000, 1000, Bitmap.Config.ARGB_4444)
+        val bitmapFilePath = mWriter.write(bitmap)
+
+        val registeredUri = mWriter.registrant.register(bitmapFilePath)
+        assertNotNull(registeredUri)
+
+        // コンテントプロバイダーのスキームになっているか
+        assertEquals(registeredUri!!.getScheme(), "content");
+
+        // コンテンツプロバイダーからビットマップが取得できるか
+        val context = getInstrumentation().getTargetContext()
+        val storedBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), registeredUri);
+        assertNotNull(storedBitmap)
+        storedBitmap.recycle()
+
+        // 後始末
+        val delWhere = "${MediaColumns.DATA}=?"
+        val delCount = context.getContentResolver().delete(registeredUri, delWhere, arrayOf(bitmapFilePath))
+        assertEquals(delCount, 1)
     }
 }
+

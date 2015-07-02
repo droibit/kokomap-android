@@ -156,11 +156,11 @@ class MapController constructor(context: Context):
      * スナップショットを内部ストレージに保存する
      */
     fun saveSnapshot(snapshot: Bitmap) {
-        val task = object: AsyncTask<Bitmap, Void, Uri>() {
+        val task = object: AsyncTask<Bitmap, Void, Uri?>() {
             override fun doInBackground(vararg params: Bitmap): Uri? {
                 try {
                     val imgPath = mBitmapWriter.write(params.first())
-                    return mBitmapWriter.registrant.regist(imgPath)
+                    return mBitmapWriter.registrant.register(imgPath)
                 } catch (e: IOException) {
                     if (BuildConfig.DEBUG) Log.e(BuildConfig.BUILD_TYPE, "bitmap save error: ", e)
                 }
