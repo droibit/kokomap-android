@@ -115,7 +115,7 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
             MSG_SNAPSHOT_TOOK  -> onMapSnapshotTook(msg.obj as Bitmap)
             MSG_USER_COMPLETE  -> onUserCompleted(msg.obj as Bitmap)
             MSG_USER_RETAKE    -> onUserRetake(msg.obj as Bitmap)
-            MSG_SNAPSHOT_SAVED -> onMapSnapshotSaved(msg.obj as String)
+            MSG_SNAPSHOT_SAVED -> onMapSnapshotSaved(msg.obj as? Uri)
         }
         return true
     }
@@ -180,8 +180,8 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
 
     // スナップショットの保存が終わった時に呼ばれる処理
     @MainThread
-    private fun onMapSnapshotSaved(filePath: String) {
-        val hasError = TextUtils.isEmpty(filePath)
+    private fun onMapSnapshotSaved(imgUri: Uri?) {
+        val hasError = imgUri == null
         var resId = if (hasError) R.string.snackbar_failed_save else R.string.snackbar_saved
         // 通常起動の場合
         if (!launchedPickMode) {
@@ -193,7 +193,7 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
         if (hasError) {
             setResult(Activity.RESULT_CANCELED)
         } else {
-            val intent = Intent().setData(Uri.fromFile(File(filePath)))
+            val intent = Intent().setData(imgUri)
             setResult(Activity.RESULT_OK, intent)
         }
         finish()

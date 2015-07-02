@@ -3,6 +3,7 @@ package com.droibit.kokomap.model
 import android.content.Context
 import android.graphics.Bitmap
 import android.location.LocationManager
+import android.net.Uri
 import android.os.AsyncTask
 import android.os.Handler
 import android.os.Looper
@@ -36,8 +37,8 @@ public val MSG_USER_COMPLETE:   Int = 5 // ユーザが完了を選択した
 public val MSG_USER_RETAKE:     Int = 6
 public val MSG_SNAPSHOT_SAVED:  Int = 7
 
-public val FLOW_MARKER_DROP_ONLY: Int        = 1
-public val FLOW_MARKER_DROP_WITH_BALLON: Int = 2
+public val FLOW_MARKER_DROP_ONLY: Int         = 1
+public val FLOW_MARKER_DROP_WITH_BALLOON: Int = 2
 
 /**
  * GoogleMapと各種モデルクラスを連携させるためのクラス。<br>
@@ -49,12 +50,8 @@ public val FLOW_MARKER_DROP_WITH_BALLON: Int = 2
  * @constructor 新しいインスタンスを生成する
  * @param context コンテキスト
  */
-public class MapController constructor(context: Context):
+class MapController constructor(context: Context):
                 OnMapReadyCallback, OnCameraChangeListener {
-
-// TODO: 2015/06/21 現在、警告が出ないので意味なし
-//    @IntDef(GoogleMap.MAP_TYPE_NORMAL.toLong(), GoogleMap.MAP_TYPE_SATELLITE.toLong())
-//    public annotation class Maps
 
     private val mContext = context
     private val mHandler = Handler(Looper.getMainLooper(), context as Handler.Callback)
@@ -159,17 +156,18 @@ public class MapController constructor(context: Context):
      * スナップショットを内部ストレージに保存する
      */
     fun saveSnapshot(snapshot: Bitmap) {
-        val task = object: AsyncTask<Bitmap, Void, String>() {
-            override fun doInBackground(vararg params: Bitmap): String? {
+        val task = object: AsyncTask<Bitmap, Void, Uri>() {
+            override fun doInBackground(vararg params: Bitmap): Uri? {
                 try {
-                    return mBitmapWriter.write(params.first())
+                    val imgPath = mBitmapWriter.write(params.first())
+                    return mBitmapWriter.registrant.regist(imgPath)
                 } catch (e: IOException) {
                     if (BuildConfig.DEBUG) Log.e(BuildConfig.BUILD_TYPE, "bitmap save error: ", e)
                 }
                 return null
             }
 
-            override fun onPostExecute(result: String?) {
+            override fun onPostExecute(result: Uri?) {
                 mHandler.sendMessage {
                     what = MSG_SNAPSHOT_SAVED
                     obj  = result
@@ -209,4 +207,4 @@ public class MapController constructor(context: Context):
 // ブール値からマップの種類に変換する
 fun Boolean.toMapType() = if (this) GoogleMap.MAP_TYPE_SATELLITE else GoogleMap.MAP_TYPE_NORMAL
 // ブール値からマーカー追加のフローを取得する
-fun Boolean.toDropFlow() = if (this) FLOW_MARKER_DROP_WITH_BALLON else FLOW_MARKER_DROP_ONLY
+fun Boolean.toDropFlow() = if (this) FLOW_MARKER_DROP_WITH_BALLOON else FLOW_MARKER_DROP_ONLY

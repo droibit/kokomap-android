@@ -14,6 +14,7 @@ import java.util.*
 
 /**
  * [Bitmap] を内部ストレージに保存するためのクラス。
+ * 保存する際はクオリティ85 の jpeg形式の画像にしている。
  *
  * @auther kumagai
  * @since 15/06/22
@@ -21,7 +22,7 @@ import java.util.*
  * @constructor 新しいインスタンスを生成する
  * @param context コンテキスト
  */
-public class BitmapWriter constructor(context: Context) {
+class BitmapWriter constructor(context: Context) {
 
     companion object {
         val sDateFormatter = SimpleDateFormat("yyMMddHHmmss")
@@ -37,12 +38,14 @@ public class BitmapWriter constructor(context: Context) {
 
     private val mContext = context
 
+    // MediaStoreに画像を登録します
+    public val registrant: MediaRegistrant = MediaRegistrant(context)
+
     /**
-     * ビットマップをpng形式の画像ファイルに保存する。
+     * ビットマップをjpeg形式の画像ファイルに保存する。
      *
-     * @param context コンテキスト
      * @param bitmap 保存対象のビットマップ
-     * @return 保存したファイルのパス（コンテンツプロバイダに登録する場合は使用可能）
+     * @return 保存したファイルのURI
      */
     @WorkerThread
     public fun write(bitmap: Bitmap): String {
@@ -70,3 +73,4 @@ public class BitmapWriter constructor(context: Context) {
         return mContext.getString(R.string.dest_file_name, sDateFormatter.format(date))
     }
 }
+

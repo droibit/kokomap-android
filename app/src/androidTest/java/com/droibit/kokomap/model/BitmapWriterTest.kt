@@ -57,4 +57,9 @@ public class BitmapWriterTest: InstrumentationTestCase() {
         assertTrue(bitmapFile.name.startsWith("kokomap_"))
         assertTrue(bitmapFile.name.endsWith(".jpg"))
     }
+
+    @Test
+    public fun testRegistMediaStore() {
+        // TODO:
+    }
 }
