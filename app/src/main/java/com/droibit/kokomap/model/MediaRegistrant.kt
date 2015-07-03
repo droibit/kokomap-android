@@ -32,13 +32,13 @@ class MediaRegistrant constructor(context: Context) {
      * @return 登録後の画像ファイルのURI（content://...)
      */
     public fun register(filePath: String): Uri? {
-        return mContext.getContentResolver().insertExternalContent {
+        return mContext.getContentResolver().insert(Media.EXTERNAL_CONTENT_URI) { values ->
             val imgFile = File(filePath)
-            put(MediaColumns.TITLE, imgFile.name)
-            put(MediaColumns.DISPLAY_NAME, imgFile.name)
-            put(MediaColumns.MIME_TYPE, MIME_JPEG)
-            put(MediaColumns.DATA, imgFile.getAbsolutePath())
-            put(ImageColumns.DATE_TAKEN, imgFile.lastModified())
+            values.put(MediaColumns.TITLE, imgFile.name)
+            values.put(MediaColumns.DISPLAY_NAME, imgFile.name)
+            values.put(MediaColumns.MIME_TYPE, MIME_JPEG)
+            values.put(MediaColumns.DATA, imgFile.getAbsolutePath())
+            values.put(ImageColumns.DATE_TAKEN, imgFile.lastModified())
         }
     }
 }
@@ -46,8 +46,8 @@ class MediaRegistrant constructor(context: Context) {
 /**
  * 内部ストレージに保存した画像をMediaStoreに登録します。
  */
-private fun ContentResolver.insertExternalContent(init: ContentValues.()->Unit): Uri {
+private fun ContentResolver.insert(uri: Uri, init: (ContentValues)->Unit): Uri {
     val values = ContentValues()
-    values.init()
-    return insert(Media.EXTERNAL_CONTENT_URI, values)
+    init(values)
+    return insert(uri, values)
 }
