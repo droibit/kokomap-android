@@ -13,6 +13,7 @@ import android.test.ActivityInstrumentationTestCase2
 import android.test.suitebuilder.annotation.LargeTest
 import com.droibit.kokomap.MainActivity
 import com.droibit.kokomap.R
+import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -46,12 +47,13 @@ public class BalloonDialogFragmentTest: ActivityInstrumentationTestCase2<MainAct
     @Test
     public fun testInputText() {
         mActivity.showBalloonDialog()
+
+        onView(withId(android.R.id.button1)).check(matches(not(isEnabled())))
+
         // FIXME: 日本語キーボードの場合失敗する
         onView(withId(R.id.balloon_snippet)).perform(typeText("Test"), closeSoftKeyboard())
                                             .check(matches(withText("Test")))
         onView(withId(android.R.id.button1)).check(matches(isEnabled()))
-
-        //onView(withId(android.R.id.button1)).perform(click())
     }
 
     @Test
