@@ -10,9 +10,17 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import kotlin.properties.Delegates
 import android.support.test.espresso.Espresso.onView
+import android.support.test.espresso.UiController
+import android.support.test.espresso.ViewAction
 import android.support.test.espresso.matcher.ViewMatchers.withId
+import android.support.test.espresso.matcher.ViewMatchers.isEnabled
+import android.support.test.espresso.matcher.ViewMatchers.withText;
 import android.support.test.espresso.assertion.ViewAssertions.matches
+import android.support.test.espresso.action.ViewActions.typeText
+import android.support.test.espresso.action.ViewActions.closeSoftKeyboard
 import android.support.test.espresso.action.ViewActions.click
+import android.view.View
+import org.hamcrest.Matcher
 
 /**
  * [MainActivity] クラスの単体テスト
@@ -39,9 +47,17 @@ public class MainActivityTest: ActivityInstrumentationTestCase2<MainActivity>(ja
     }
 
     @Test
-    public fun testFabMenuClick() {
-        onView(withId(R.id.fab_menu)).perform(click())
-        onView(withId(R.id.fab_marker)).perform(click())
+    public fun testShowBalloonDialog() {
+        mActivity.showBalloonDialog()
+        // FIXME: 日本語キーボードの場合失敗する
+        onView(withId(R.id.balloon_snippet)).perform(typeText("Test"), closeSoftKeyboard())
+                                            .check(matches(withText("Test")))
+        onView(withId(android.R.id.button1)).check(matches(isEnabled()))
+                                            .check(matches(withText(mActivity.getString(android.R.string.ok))))
+        onView(withId(android.R.id.button2)).check(matches(withText(mActivity.getString(android.R.string.cancel))))
+        //onView(withId(android.R.id.button1)).perform(click())
+    }
+
+    public fun testShowPreviewDialogFragment() {
     }
 }
-

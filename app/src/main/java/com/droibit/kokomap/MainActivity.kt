@@ -9,6 +9,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import android.support.annotation.MainThread
+import android.support.annotation.VisibleForTesting
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
@@ -53,7 +54,7 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
     // バックグランド時にダイアログを操作しないためのハンドラー
     private val mHandler: ResumeHandler = ResumeHandler()
     // 他アプリから起動したかどうか
-    private var launchedPickMode = false
+    private var mLaunchedPickMode = false
 
     /** {@inheritDoc} */
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,7 +69,7 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
 
         // 他アプリから起動したかどうか
         if (Intent.ACTION_GET_CONTENT == getIntent()?.getAction()) {
-            launchedPickMode = true
+            mLaunchedPickMode = true
         }
     }
 
@@ -169,7 +170,7 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
     // 地図のスナップショットを撮りえ終えた際に呼ばれる処理
     @MainThread
     private fun onMapSnapshotTook(snapshot: Bitmap) {
-        showPreviewDialog(snapshot)
+        showPreviewDialog(snapshot, mLaunchedPickMode)
 
         mHandler.postDelayed(250L) { mMapController.clearMarker() }
     }
@@ -184,7 +185,7 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
         val hasError = imgUri == null
         var resId = if (hasError) R.string.snackbar_failed_save else R.string.snackbar_saved
         // 通常起動の場合
-        if (!launchedPickMode) {
+        if (!mLaunchedPickMode) {
             showSnackbar(mRootView, resId, Snackbar.LENGTH_LONG)
             return
         }
@@ -204,8 +205,10 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
     private fun onUserRetake(bitmap: Bitmap) = bitmap.recycle()
 
     // 吹き出しスニペット入力用ダイアログを表示する
-    private fun showBalloonDialog() = BalloonDialogFragment().show(getSupportFragmentManager())
+    @VisibleForTesting
+    fun showBalloonDialog() = BalloonDialogFragment().show(getSupportFragmentManager())
     // スナップショットのプレビューダイアログを表示する
-    private fun showPreviewDialog(snapshot: Bitmap) = PreviewDialogFragment.newInstance(snapshot, launchedPickMode)
-                                                                           .show(getSupportFragmentManager())
+    @VisibleForTesting
+    fun showPreviewDialog(snapshot: Bitmap, launchedPickMode: Boolean) = PreviewDialogFragment.newInstance(snapshot, launchedPickMode)
+                                                                                              .show(getSupportFragmentManager())
 }
