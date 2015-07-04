@@ -8,6 +8,7 @@ import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
 import android.test.InstrumentationTestCase
 import android.test.suitebuilder.annotation.SmallTest
+import com.droibit.easycreator.kDelete
 import org.junit.Test
 import org.junit.runner.RunWith
 import kotlin.properties.Delegates
@@ -83,7 +84,9 @@ public class BitmapWriterTest: InstrumentationTestCase() {
 
         // 後始末
         val delWhere = "${MediaColumns.DATA}=?"
-        val delCount = context.getContentResolver().delete(registeredUri, delWhere, arrayOf(bitmapFilePath))
+        val delCount = context.getContentResolver().kDelete(uri           = registeredUri,
+                                                            where         = "${MediaColumns.DATA}=?",
+                                                            selectionArgs = arrayOf(bitmapFilePath))
         assertEquals(delCount, 1)
     }
 }

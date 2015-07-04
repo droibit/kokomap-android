@@ -8,11 +8,13 @@ import android.provider.MediaStore
 import android.provider.MediaStore.Images.*
 import android.provider.MediaStore.MediaColumns
 import java.io.File
+import com.droibit.easycreator.insert
 
 /**
  * 保存したjpeg画像をMediaStoreに登録する。
  *
- * Created by kumagai on 2015/07/02.
+ * @author kumagai
+ * @since 2015/07/02
  *
  * @constructor 新しいインスタンスを作成します。
  * @param context コンテキスト
@@ -41,13 +43,4 @@ class MediaRegistrant constructor(context: Context) {
             values.put(ImageColumns.DATE_TAKEN, imgFile.lastModified())
         }
     }
-}
-
-/**
- * 内部ストレージに保存した画像をMediaStoreに登録します。
- */
-private fun ContentResolver.insert(uri: Uri, init: (ContentValues)->Unit): Uri {
-    val values = ContentValues()
-    init(values)
-    return insert(uri, values)
 }

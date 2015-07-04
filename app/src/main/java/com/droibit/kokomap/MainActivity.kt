@@ -31,6 +31,7 @@ import com.droibit.kokomap.model.*
 import com.droibit.kokomap.utils.ResumeHandler
 import com.droibit.kokomap.utils.sendRunnableMessageDelayed
 import com.droibit.kokomap.utils.sendRunnableMessage
+import com.droibit.easycreator.intent
 import com.google.android.gms.maps.model.Marker
 import java.io.File
 
@@ -182,8 +183,7 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
     // スナップショットの保存が終わった時に呼ばれる処理
     @MainThread
     private fun onMapSnapshotSaved(imgUri: Uri?) {
-        val hasError = imgUri == null
-        var resId = if (hasError) R.string.snackbar_failed_save else R.string.snackbar_saved
+        var resId = if (imgUri == null) R.string.snackbar_failed_save else R.string.snackbar_saved
         // 通常起動の場合
         if (!mLaunchedPickMode) {
             showSnackbar(mRootView, resId, Snackbar.LENGTH_LONG)
@@ -191,11 +191,10 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
         }
 
         // スナップショットの保存に失敗した場合
-        if (hasError) {
+        if (imgUri == null) {
             setResult(Activity.RESULT_CANCELED)
         } else {
-            val intent = Intent().setData(imgUri)
-            setResult(Activity.RESULT_OK, intent)
+            setResult(Activity.RESULT_OK, intent(imgUri))
         }
         finish()
     }

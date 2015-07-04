@@ -55,10 +55,8 @@ dependencies {
     compile "com.android.support:design:$support_lib_version"
     compile 'com.github.clans:fab:1.5.0'
     compile 'com.github.droibit:trimmin:0.1.1'
+    compile 'com.droibit:easycreator:0.3.8@aar'
 
-    compile('com.droibit:easycreator:0.3.7@aar') {
-        transitive = false
-    }
     compile('com.jakewharton:kotterknife:0.1.0-SNAPSHOT') {
         transitive = false
     }
