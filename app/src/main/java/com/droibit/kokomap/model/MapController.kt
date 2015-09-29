@@ -1,15 +1,18 @@
 package com.droibit.kokomap.model
 
+import android.Manifest
+import android.app.Activity
 import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.location.LocationManager
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Handler
 import android.os.Looper
-import android.support.annotation.MainThread
 import android.support.annotation.WorkerThread
-import android.text.TextUtils
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.util.Log
 import com.droibit.easycreator.getInteger
 import com.droibit.easycreator.getLocationManager
@@ -17,9 +20,7 @@ import com.droibit.easycreator.postDelayed
 import com.droibit.easycreator.sendMessage
 import com.droibit.kokomap.BuildConfig
 import com.droibit.kokomap.R
-import com.droibit.kokomap.extension.animateCamera
 import com.droibit.kokomap.extension.moveCamera
-import com.droibit.kokomap.model.MapRestorer
 import com.droibit.kokomap.model.entity.RestorableCamera
 import com.droibit.kokomap.view.animation.MarkerAnimator
 import com.google.android.gms.maps.GoogleMap
@@ -27,7 +28,6 @@ import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
 import java.io.IOException
-import kotlin.properties.Delegates
 
 public val MSG_DROPPED_MARKER:  Int = 1
 public val MSG_SNIPPET_OK:      Int = 2
@@ -39,6 +39,9 @@ public val MSG_SNAPSHOT_SAVED:  Int = 7
 
 public val FLOW_MARKER_DROP_ONLY: Int         = 1
 public val FLOW_MARKER_DROP_WITH_BALLOON: Int = 2
+
+public val REQUEST_ACCESS_LOCATION: Int = 1
+public val REQUEST_WRITE_EXTERNAL_STORAGE: Int = 2
 
 /**
  * GoogleMapと各種モデルクラスを連携させるためのクラス。<br>
@@ -71,9 +74,12 @@ class MapController constructor(context: Context):
     override fun onMapReady(map: GoogleMap) {
         mMap = map
 
-        map.setMyLocationEnabled(true)
+        map.isMyLocationEnabled = true
         map.setOnCameraChangeListener(this)
-        moveInitialPosition(map)
+
+        if (!requestAccessLocationIfNeed()) {
+            moveInitialPosition()
+        }
     }
 
     /** {@inheritDoc} */
@@ -81,7 +87,6 @@ class MapController constructor(context: Context):
         if (BuildConfig.DEBUG) {
             Log.d(BuildConfig.BUILD_TYPE, "lat: ${camera.target.latitude}, lon: ${camera.target.longitude}, zoom: ${camera.zoom}")
         }
-
         mCenterPosition = camera.target
     }
 
@@ -89,7 +94,7 @@ class MapController constructor(context: Context):
      * ライフサイクルの#onPause 時に呼ぶ
      */
     fun onPause() {
-        mMap?.let { mRestorer.store(it.getCameraPosition()) }
+        mMap?.let { mRestorer.store(it.cameraPosition) }
     }
 
     /**
@@ -100,7 +105,7 @@ class MapController constructor(context: Context):
      */
     fun onMapTypeChange(satellite: Boolean): Boolean {
         mMap?.let {
-            it.setMapType(satellite.toMapType())
+            it.mapType = satellite.toMapType()
             return true
         }
         return false
@@ -119,7 +124,7 @@ class MapController constructor(context: Context):
 
         mMap?.let {
             val marker = it.addMarker(MarkerOptions()
-                                        .position(it.getCameraPosition().target)
+                                        .position(it.cameraPosition.target)
                                         .draggable(false)
                                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
             )
@@ -137,19 +142,20 @@ class MapController constructor(context: Context):
     fun onSnippetInputted(text: String) {
         // スニペットが入力されたら地図上で表示します。
         marker?.let {
-            it.setTitle(mContext.getString(R.string.marker_title))
-            it.setSnippet(text)
+            it.title = mContext.getString(R.string.marker_title)
+            it.snippet = text
             it.showInfoWindow()
         }
-
         mHandler.postDelayed(300L) { snapshot() }
     }
 
     /**
      * 地図のスナップショットを撮る
      */
-    fun snapshot() {
-        mSnapshooter.snapshot(mMap!!)
+    fun snapshot(force: Boolean = false) {
+        if (force || !requestWriteExternalStorageIfNeed()) {
+            mSnapshooter.snapshot(mMap!!)
+        }
     }
 
     /**
@@ -191,17 +197,48 @@ class MapController constructor(context: Context):
      * 直近の位置情報がある場合はそれを使用し、
      * とれなかった場合は最後に表示していた地図の状態を復元する。
      */
-    private fun moveInitialPosition(map: GoogleMap) {
+    fun moveInitialPosition() {
         val lm = mContext.getLocationManager()
         val ll = lm?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
 
         var camera = if (ll != null) {
-                        RestorableCamera(ll.getLatitude(), ll.getLongitude(), MapRestorer.Companion.EXPAND_ZOOM)
+                        RestorableCamera(ll.latitude, ll.longitude, MapRestorer.Companion.EXPAND_ZOOM)
                      } else {
                         mRestorer.restore()
                      }
-        map.moveCamera(camera.latitude, camera.longitude, camera.zoom)
+        mMap!!.moveCamera(camera.latitude, camera.longitude, camera.zoom)
     }
+
+    /**
+     * ロケーションアクセスのパーミッションが許可されていない場合は要求する
+     *
+     * @return trueの場合は要求、falseの場合は要求不要
+     */
+    private fun requestAccessLocationIfNeed(): Boolean {
+        if (grantedPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
+            return false
+        }
+        ActivityCompat.requestPermissions(mContext as Activity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                                            REQUEST_ACCESS_LOCATION)
+        return true
+    }
+
+    /**
+     * 外部ストレージへの書き込みが許可されていない場合は要求する
+     *
+     * @return trueの場合は要求、falseの場合は要求不要
+     */
+    private fun requestWriteExternalStorageIfNeed(): Boolean {
+        if (grantedPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            return false
+        }
+        ActivityCompat.requestPermissions(mContext as Activity, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                REQUEST_WRITE_EXTERNAL_STORAGE)
+        return true
+    }
+
+    private fun grantedPermission(permission: String) =
+            ContextCompat.checkSelfPermission(mContext, permission) == PackageManager.PERMISSION_GRANTED
 }
 
 // ブール値からマップの種類に変換する

@@ -2,38 +2,33 @@ package com.droibit.kokomap
 
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.os.Looper
 import android.os.Message
 import android.support.annotation.MainThread
 import android.support.annotation.VisibleForTesting
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import butterknife.bindView
-import com.droibit.easycreator.*
+import com.droibit.easycreator.intent
+import com.droibit.easycreator.postDelayed
+import com.droibit.easycreator.startActivity
 import com.droibit.kokomap.extension.showSnackbar
-import com.github.clans.fab.FloatingActionButton
-import com.github.clans.fab.FloatingActionMenu
-import com.google.android.gms.maps.SupportMapFragment
-import kotlin.properties.Delegates
 import com.droibit.kokomap.fragment.dialog.BalloonDialogFragment
 import com.droibit.kokomap.fragment.dialog.PreviewDialogFragment
 import com.droibit.kokomap.model.*
 import com.droibit.kokomap.utils.ResumeHandler
 import com.droibit.kokomap.utils.sendRunnableMessageDelayed
-import com.droibit.kokomap.utils.sendRunnableMessage
-import com.droibit.easycreator.intent
+import com.github.clans.fab.FloatingActionMenu
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.Marker
-import java.io.File
 
 
 /**
@@ -44,11 +39,11 @@ import java.io.File
  */
 public class MainActivity : AppCompatActivity(), Handler.Callback {
 
-    private val mMapFragment: SupportMapFragment by Delegates.lazy {
+    private val mMapFragment: SupportMapFragment by lazy {
         getSupportFragmentManager().findFragmentById(R.id.map) as SupportMapFragment
     }
     // [SupportMapFragment]のデリゲート
-    private val mMapController: MapController by Delegates.lazy { MapController(this) }
+    private val mMapController: MapController by lazy { MapController(this) }
     private val mFabMenu: FloatingActionMenu by bindView(R.id.fab_menu)
     private val mRootView: View by bindView(R.id.root)
 
@@ -59,40 +54,60 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
 
     /** {@inheritDoc} */
     override fun onCreate(savedInstanceState: Bundle?) {
-        super<AppCompatActivity>.onCreate(savedInstanceState)
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // 他アプリから起動したかどうか
+        if (Intent.ACTION_GET_CONTENT == intent?.action) {
+            mLaunchedPickMode = true
+        }
 
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         toolbar.setTitleTextColor(R.color.gray_dark)
         setSupportActionBar(toolbar)
 
         mMapFragment.getMapAsync(mMapController)
-
-        // 他アプリから起動したかどうか
-        if (Intent.ACTION_GET_CONTENT == getIntent()?.getAction()) {
-            mLaunchedPickMode = true
-        }
     }
 
     /** {@inheritDoc} */
     override fun onResume() {
-        super<AppCompatActivity>.onResume()
+        super.onResume()
 
         mHandler.onResume()
     }
 
     /** {@inheritDoc} */
     override fun onPause() {
-        super<AppCompatActivity>.onPause()
+        super.onPause()
 
         mHandler.onPause()
         mMapController.onPause()
     }
 
     /** {@inheritDoc} */
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        when (requestCode) {
+            REQUEST_ACCESS_LOCATION -> {
+                if (grantResults.first() == PackageManager.PERMISSION_GRANTED) {
+                    mMapController.moveInitialPosition()
+                } else {
+                    showSnackbar(mRootView, R.string.snackbar_denied_location, Snackbar.LENGTH_LONG)
+                }
+            }
+            REQUEST_WRITE_EXTERNAL_STORAGE -> {
+                // パーミッションの許可/拒否にかかわらず保存処理に移行する
+                // ※ 拒否されている場合は保存時に必ず失敗するのでいいか?
+                mMapController.snapshot(force = true)
+            }
+        }
+    }
+
+    /** {@inheritDoc} */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu)
+        menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
@@ -101,11 +116,11 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        when (item.getItemId()) {
+        when (item.itemId) {
             R.id.action_settings  -> { return startSettingsActivity() }
             R.id.action_satellite -> { return changeMapType(item) }
         }
-        return super<AppCompatActivity>.onOptionsItemSelected(item)
+        return super.onOptionsItemSelected(item)
     }
 
     /** {@inheritDoc} */
@@ -116,7 +131,7 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
             MSG_SNIPPET_OK     -> onSnippetOk(msg.obj.toString())
             MSG_SNAPSHOT_TOOK  -> onMapSnapshotTook(msg.obj as Bitmap)
             MSG_USER_COMPLETE  -> onUserCompleted(msg.obj as Bitmap)
-            MSG_USER_RETAKE    -> onUserRetake(msg.obj as Bitmap)
+            MSG_USER_RETAKE    -> onUserRetake(msg.obj as? Bitmap)
             MSG_SNAPSHOT_SAVED -> onMapSnapshotSaved(msg.obj as? Uri)
         }
         return true
@@ -126,7 +141,7 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
      * マーカードロップボタンが押下された時の処理
      */
     fun onDropMarker(v: View) {
-        val withBalloon = v.getId() == R.id.fab_balloon
+        val withBalloon = v.id == R.id.fab_balloon
         mMapController.onDropMarker(withBalloon)
 
         mFabMenu.close(true)
@@ -140,8 +155,8 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
 
     // GoogleMapが表示する地図の種類を変更する
     private fun changeMapType(item: MenuItem): Boolean {
-        if (mMapController.onMapTypeChange(!item.isChecked())) {
-            item.setChecked(!item.isChecked())
+        if (mMapController.onMapTypeChange(!item.isChecked)) {
+            item.setChecked(!item.isChecked)
             return true
         }
         return false
@@ -201,13 +216,13 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
 
     // ユーザが撮り直しを選択した時に呼ばれる処理
     @MainThread
-    private fun onUserRetake(bitmap: Bitmap) = bitmap.recycle()
+    private fun onUserRetake(bitmap: Bitmap?) = bitmap?.recycle()
 
     // 吹き出しスニペット入力用ダイアログを表示する
     @VisibleForTesting
-    fun showBalloonDialog() = BalloonDialogFragment().show(getSupportFragmentManager())
+    fun showBalloonDialog() = BalloonDialogFragment().show(supportFragmentManager)
     // スナップショットのプレビューダイアログを表示する
     @VisibleForTesting
     fun showPreviewDialog(snapshot: Bitmap, launchedPickMode: Boolean) = PreviewDialogFragment.newInstance(snapshot, launchedPickMode)
-                                                                                              .show(getSupportFragmentManager())
+                                                                                              .show(supportFragmentManager)
 }

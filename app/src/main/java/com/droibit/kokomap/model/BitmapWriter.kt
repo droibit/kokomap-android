@@ -60,7 +60,7 @@ class BitmapWriter constructor(context: Context) {
         }
         bitmap.recycle()
 
-        return destFile.getAbsolutePath()
+        return destFile.absolutePath
     }
 
     /**

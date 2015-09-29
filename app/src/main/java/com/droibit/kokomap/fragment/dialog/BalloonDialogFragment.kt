@@ -16,12 +16,10 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
-import com.droibit.easycreator.compat.getInteger
 import com.droibit.easycreator.sendMessage
 import com.droibit.kokomap.R
 import com.droibit.kokomap.model.MSG_SNIPPET_CANCEL
 import com.droibit.kokomap.model.MSG_SNIPPET_OK
-import com.droibit.kokomap.model.MSG_USER_RETAKE
 import kotlin.properties.Delegates
 
 /**
@@ -37,13 +35,13 @@ class BalloonDialogFragment: DialogFragment(), DialogInterface.OnClickListener {
         val TAG_DIALOG = "balloon_dialog"
     }
 
-    private val mContentWather = object: TextWatcher {
+    private val mContentWatcher = object: TextWatcher {
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) { }
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
 
         override fun afterTextChanged(s: Editable?) {
             // スニペットの内容が空の場合はOKボタンを押せなくする
-            mPositiveButton.setEnabled(!TextUtils.isEmpty(s?.toString()))
+            mPositiveButton.isEnabled = !TextUtils.isEmpty(s?.toString())
         }
     }
     private var mPositiveButton: Button by Delegates.notNull()
@@ -53,7 +51,7 @@ class BalloonDialogFragment: DialogFragment(), DialogInterface.OnClickListener {
 
     /** {@inheritDoc} */
     override fun onAttach(activity: Activity?) {
-        super<DialogFragment>.onAttach(activity)
+        super.onAttach(activity)
 
         if (activity !is Handler.Callback) {
             throw IllegalStateException("Activity must implements Handler.Callback")
@@ -63,11 +61,11 @@ class BalloonDialogFragment: DialogFragment(), DialogInterface.OnClickListener {
 
     /** {@inheritDoc} */
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val view = View.inflate(getActivity(), R.layout.dialog_balloon, null)
+        val view = View.inflate(context, R.layout.dialog_balloon, null)
         mBalloonText = view.findViewById(R.id.balloon_snippet) as EditText
-        mBalloonText.addTextChangedListener(mContentWather)
+        mBalloonText.addTextChangedListener(mContentWatcher)
 
-        val dialog = AlertDialog.Builder(getActivity())
+        val dialog = AlertDialog.Builder(context)
                                 .setTitle(getString(R.string.dialog_title_balloon))
                                 .setView(view)
                                 .setPositiveButton(android.R.string.ok, this)
@@ -75,17 +73,17 @@ class BalloonDialogFragment: DialogFragment(), DialogInterface.OnClickListener {
                                 .create()
 
         // ダイアログを表示した際にキーボード表示する。
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
+        dialog.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
         return dialog
     }
 
     /** {@inheritDoc} */
     override fun onResume() {
-        super<DialogFragment>.onResume()
+        super.onResume()
 
-        val dialog = getDialog() as AlertDialog
+        val dialog = dialog as AlertDialog
         mPositiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE)
-        mPositiveButton.setEnabled(!TextUtils.isEmpty(mBalloonText.getText()))
+        mPositiveButton.isEnabled = !TextUtils.isEmpty(mBalloonText.text)
     }
 
     /** {@inheritDoc} */
@@ -94,10 +92,10 @@ class BalloonDialogFragment: DialogFragment(), DialogInterface.OnClickListener {
             DialogInterface.BUTTON_POSITIVE -> {
                 mHandler.sendMessage {
                     what = MSG_SNIPPET_OK
-                    obj  = mBalloonText.getText().toString()
+                    obj  = mBalloonText.text.toString()
                 }
             }
-            DialogInterface.BUTTON_NEGATIVE -> { mHandler.sendEmptyMessage(MSG_USER_RETAKE) }
+            DialogInterface.BUTTON_NEGATIVE -> { mHandler.sendEmptyMessage(MSG_SNIPPET_CANCEL) }
         }
     }
 
@@ -105,7 +103,7 @@ class BalloonDialogFragment: DialogFragment(), DialogInterface.OnClickListener {
      * ダイアログを表示するためのユーティリティメソッド
      */
     fun show(fm: FragmentManager) {
-        setCancelable(false)
+        isCancelable = false
         show(fm, TAG_DIALOG)
     }
 }

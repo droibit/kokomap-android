@@ -24,4 +24,5 @@
     <string name="dialog_title_preview">Preview</string>
     <string name="snackbar_saved">Saved</string>
     <string name="snackbar_failed_save">Failed to save</string>
+    <string name="snackbar_denied_location">Do not move automatically to the current position</string>
 </resources>

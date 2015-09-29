@@ -18,4 +18,5 @@
     <string name="dialog_title_preview">プレビュー</string>
     <string name="snackbar_saved">保存完了</string>
     <string name="snackbar_failed_save">保存に失敗</string>
+    <string name="snackbar_denied_location">現在位置に自動で移動しません</string>
 </resources>

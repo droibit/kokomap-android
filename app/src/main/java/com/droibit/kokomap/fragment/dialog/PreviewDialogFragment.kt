@@ -49,7 +49,7 @@ class PreviewDialogFragment: DialogFragment(), DialogInterface.OnClickListener {
 
     /** {@inheritDoc} */
     override fun onAttach(activity: Activity?) {
-        super<DialogFragment>.onAttach(activity)
+        super.onAttach(activity)
 
         if (activity !is Handler.Callback) {
             throw IllegalStateException("Activity must implements Handler.Callback")
@@ -59,16 +59,16 @@ class PreviewDialogFragment: DialogFragment(), DialogInterface.OnClickListener {
 
     /** {@inheritDoc} */
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val view = View.inflate(getActivity(), R.layout.dialog_preview, null)
+        val view = View.inflate(context, R.layout.dialog_preview, null)
         val imageView = view.findViewById(R.id.image) as ImageView
         imageView.setImageBitmap(getArguments().getParcelable(ARG_SNAPSHOT))
 
-        val positiveRes = if (getArguments().getBoolean(ARG_LAUNCHED_PICK_MODE, false))
+        val positiveRes = if (arguments.getBoolean(ARG_LAUNCHED_PICK_MODE, false))
                             R.string.text_done
                           else
                             R.string.text_save
 
-        return AlertDialog.Builder(getActivity())
+        return AlertDialog.Builder(context)
                           .setView(view)
                           .setPositiveButton(positiveRes, this)
                           .setNegativeButton(R.string.text_retake, this)
@@ -81,13 +81,13 @@ class PreviewDialogFragment: DialogFragment(), DialogInterface.OnClickListener {
             DialogInterface.BUTTON_POSITIVE -> {
                 mHandler.sendMessage {
                     what = MSG_USER_COMPLETE
-                    obj  = getArguments().getParcelable(ARG_SNAPSHOT)
+                    obj  = arguments.getParcelable(ARG_SNAPSHOT)
                 }
             }
             DialogInterface.BUTTON_NEGATIVE -> {
                 mHandler.sendMessage {
                     what = MSG_USER_RETAKE
-                    obj  = getArguments().getParcelable(ARG_SNAPSHOT)
+                    obj  = arguments.getParcelable(ARG_SNAPSHOT)
                 }
             }
         }
@@ -97,7 +97,7 @@ class PreviewDialogFragment: DialogFragment(), DialogInterface.OnClickListener {
      * ダイアログを表示するためのユーティリティメソッド
      */
     fun show(fm: FragmentManager) {
-        setCancelable(false)
+        isCancelable = false
         show(fm, TAG_DIALOG)
     }
 }

@@ -17,7 +17,7 @@ import com.google.android.gms.maps.model.Marker
  */
 class MarkerAnimator constructor(callback: Handler.Callback) {
 
-    volatile var isAnimating: Boolean = false
+    var isAnimating: Boolean = false
         private set
 
     private val mHandler = Handler(callback)

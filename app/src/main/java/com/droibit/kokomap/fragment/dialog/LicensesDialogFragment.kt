@@ -1,9 +1,9 @@
 package com.droibit.kokomap.fragment.dialog
 
 import android.app.Dialog
-import android.os.Bundle
 import android.app.DialogFragment
 import android.app.FragmentManager
+import android.os.Bundle
 import com.droibit.kokomap.R
 import de.psdev.licensesdialog.LicensesDialog
 
@@ -21,7 +21,7 @@ class LicensesDialogFragment: DialogFragment() {
 
     /** {@inheritDoc} */
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = LicensesDialog.Builder(getActivity())
+        val dialog = LicensesDialog.Builder(context)
                                    .setNotices(R.raw.licenses)
                                    .setShowFullLicenseText(true)
                                    .build()

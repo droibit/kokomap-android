@@ -8,7 +8,6 @@ import android.view.View
 import com.droibit.kokomap.BuildConfig
 import com.droibit.kokomap.R
 import com.droibit.kokomap.fragment.dialog.LicensesDialogFragment
-import com.droibit.kokomap.model.BitmapWriter
 
 /**
  * アプリの設定画面を表示するためのフラグメント
@@ -30,10 +29,10 @@ public class SettingsFragment: PreferenceFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val prefDestDir = findPreference(R.string.pref_app_dest_folder_key)
-        prefDestDir.setSummary("/sdcard/${Environment.DIRECTORY_PICTURES}/${getString(R.string.dest_dir)}")
+        prefDestDir.summary = "/sdcard/${Environment.DIRECTORY_PICTURES}/${getString(R.string.dest_dir)}"
 
         val prefVersion = findPreference(R.string.pref_summary_version_key)
-        prefVersion.setSummary(getString(R.string.pref_summary_version_summary, BuildConfig.VERSION_NAME))
+        prefVersion.summary = getString(R.string.pref_summary_version_summary, BuildConfig.VERSION_NAME)
 
         findPreference(R.string.pref_summary_oss_key).setOnPreferenceClickListener {
             showLicensesDialog()
@@ -43,7 +42,7 @@ public class SettingsFragment: PreferenceFragment() {
     private fun findPreference(@StringRes resId: Int) = findPreference(getString(resId))
 
     private fun showLicensesDialog(): Boolean {
-        LicensesDialogFragment().show(getFragmentManager())
+        LicensesDialogFragment().show(fragmentManager)
         return true
     }
 }

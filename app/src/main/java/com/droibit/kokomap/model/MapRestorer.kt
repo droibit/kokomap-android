@@ -1,17 +1,11 @@
 package com.droibit.kokomap.model
 
 import android.content.Context
-import com.droibit.easycreator.apply
 import com.droibit.easycreator.commit
 import com.droibit.easycreator.getDefaultSharedPreferences
-import com.droibit.easycreator.getPrivateSharedPreferences
-import com.droibit.kokomap.extension.animateCamera
-import com.droibit.kokomap.extension.moveCamera
 import com.droibit.kokomap.model.entity.RestorableCamera
 import com.droibit.kokomap.model.entity.toRestorableCamera
-import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
 
 /**
  * 地図の中心座標、ズーム率の保存と復元を行う為のクラス
