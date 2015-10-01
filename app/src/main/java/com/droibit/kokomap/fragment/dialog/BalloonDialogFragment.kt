@@ -26,13 +26,12 @@ import kotlin.properties.Delegates
  * 吹き出しに表示する内容を入力するためのダイアログ。
  * キャンセルボタン以外ではダイアログを閉じれなくしている
  *
- * @auther kumagai
- * @since 15/06/24
+ * @author kumagai
  */
 class BalloonDialogFragment: DialogFragment(), DialogInterface.OnClickListener {
 
     companion object {
-        val TAG_DIALOG = "balloon_dialog"
+        const val TAG_DIALOG = "balloon_dialog"
     }
 
     private val mContentWatcher = object: TextWatcher {

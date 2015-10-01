@@ -12,7 +12,6 @@ import java.io.File
  * 保存したjpeg画像をMediaStoreに登録する。
  *
  * @author kumagai
- * @since 2015/07/02
  *
  * @constructor 新しいインスタンスを作成します。
  * @param context コンテキスト
@@ -20,7 +19,7 @@ import java.io.File
 class MediaRegistrant constructor(context: Context) {
 
     companion object {
-        val MIME_JPEG = "image/jpeg"
+        const val MIME_JPEG = "image/jpeg"
     }
 
     private val mContext = context

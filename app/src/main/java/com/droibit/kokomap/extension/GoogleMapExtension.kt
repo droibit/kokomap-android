@@ -7,8 +7,7 @@ import com.google.android.gms.maps.model.LatLng
 /**
  * [GoogleMap]の拡張メソッドを定義する
  *
- * @auther kumagai
- * @since 15/06/07
+ * @author kumagai
  */
 
 /**

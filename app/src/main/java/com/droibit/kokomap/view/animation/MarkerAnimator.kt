@@ -12,8 +12,7 @@ import com.google.android.gms.maps.model.Marker
  * バウンドアニメーション付きで地図にマーカーを落とす。
  * アニメーションが完了したらアクティビティにコールバックする。
  *
- * @auther kumagai
- * @since 15/06/23
+ * @author kumagai
  */
 class MarkerAnimator constructor(callback: Handler.Callback) {
 

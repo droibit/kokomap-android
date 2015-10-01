@@ -10,13 +10,12 @@ import de.psdev.licensesdialog.LicensesDialog
 /**
  * オープンソースライセンスを表示するダイアログ
  *
- * @auther kumagai
- * @since 15/06/29
+ * @author kumagai
  */
 class LicensesDialogFragment: DialogFragment() {
 
     companion object {
-        private val TAG_DIALOG = "licenses"
+        const private val TAG_DIALOG = "licenses"
     }
 
     /** {@inheritDoc} */

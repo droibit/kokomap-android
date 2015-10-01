@@ -35,12 +35,11 @@ import com.google.android.gms.maps.model.Marker
  * 指定位置の地図画像を選択するためのアクティビティ
  *
  * @author kumagai
- * @since 2015/05/12
  */
 public class MainActivity : AppCompatActivity(), Handler.Callback {
 
     private val mMapFragment: SupportMapFragment by lazy {
-        getSupportFragmentManager().findFragmentById(R.id.map) as SupportMapFragment
+        supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
     }
     // [SupportMapFragment]のデリゲート
     private val mMapController: MapController by lazy { MapController(this) }

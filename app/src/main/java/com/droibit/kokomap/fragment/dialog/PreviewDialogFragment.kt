@@ -22,16 +22,15 @@ import kotlin.properties.Delegates
 /**
  * GoogleMapsのスナップショットのプレビューを表示するフラグメント
  *
- * @auther kumagai
- * @since 15/06/25
+ * @author kumagai
  */
 class PreviewDialogFragment: DialogFragment(), DialogInterface.OnClickListener {
 
     companion object {
-        val TAG_DIALOG = "preview_dialog"
+        private val TAG_DIALOG = "preview_dialog"
 
-        private val ARG_SNAPSHOT = "snapshot"
-        private val ARG_LAUNCHED_PICK_MODE = "pick_mode"
+        const private val ARG_SNAPSHOT = "snapshot"
+        const private val ARG_LAUNCHED_PICK_MODE = "pick_mode"
 
         /**
          * 新しいインスタンスを作成する
@@ -61,7 +60,7 @@ class PreviewDialogFragment: DialogFragment(), DialogInterface.OnClickListener {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = View.inflate(context, R.layout.dialog_preview, null)
         val imageView = view.findViewById(R.id.image) as ImageView
-        imageView.setImageBitmap(getArguments().getParcelable(ARG_SNAPSHOT))
+        imageView.setImageBitmap(arguments.getParcelable(ARG_SNAPSHOT))
 
         val positiveRes = if (arguments.getBoolean(ARG_LAUNCHED_PICK_MODE, false))
                             R.string.text_done

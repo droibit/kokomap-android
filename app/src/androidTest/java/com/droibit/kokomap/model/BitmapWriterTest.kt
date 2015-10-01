@@ -21,7 +21,7 @@ import java.util.*
 /**
  * [BitmapWriter] クラスの単体テスト
  *
- * @auther kumagai
+ * @author kumagai
  * @since 15/06/23
  */
 @SmallTest

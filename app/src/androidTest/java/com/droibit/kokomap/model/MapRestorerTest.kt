@@ -18,7 +18,7 @@ import kotlin.properties.Delegates
 /**
  * [MapRestorer] クラスの単体テスト
  *
- * @auther kumagai
+ * @author kumagai
  * @since 15/06/21
  */
 @SmallTest

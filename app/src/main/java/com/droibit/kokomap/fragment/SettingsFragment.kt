@@ -12,8 +12,7 @@ import com.droibit.kokomap.fragment.dialog.LicensesDialogFragment
 /**
  * アプリの設定画面を表示するためのフラグメント
  *
- * @auther kumagai
- * @since 15/06/22
+ * @author kumagai
  */
 public class SettingsFragment: PreferenceFragment() {
 

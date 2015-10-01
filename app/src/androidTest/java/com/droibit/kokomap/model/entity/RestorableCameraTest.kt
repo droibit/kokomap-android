@@ -13,7 +13,7 @@ import junit.framework.Assert.assertNotNull
 /**
  * [RestorableCamera] クラスの単体テスト
  *
- * @auther kumagai
+ * @author kumagai
  * @since 15/06/21
  */
 @SmallTest

@@ -10,8 +10,7 @@ import com.google.android.gms.maps.model.CameraPosition
 /**
  * 地図の中心座標、ズーム率の保存と復元を行う為のクラス
  *
- * @auther kumagai
- * @since 15/06/08
+ * @author kumagai
  *
  * @constructor 新しいインスタンスを作成します。
  * @param context コンテキスト
@@ -19,14 +18,14 @@ import com.google.android.gms.maps.model.CameraPosition
 class MapRestorer constructor(context: Context) {
 
     companion object {
-        val DEFAULT_LAT = 37.7852698098043
-        val DEFAULT_LNG = 134.7852698098043
-        val DEFAULT_ZOOM = 4.244f
-        val EXPAND_ZOOM  = 14.5f
+        const val DEFAULT_LAT = 37.7852698098043
+        const val DEFAULT_LNG = 134.7852698098043
+        const val DEFAULT_ZOOM = 4.244f
+        const val EXPAND_ZOOM  = 14.5f
 
-        private val KEY_LAT   = "lat"
-        private val KEY_LNG   = "lng"
-        private val KEY_ZOOM  = "zoom"
+        const private val KEY_LAT   = "lat"
+        const private val KEY_LNG   = "lng"
+        const private val KEY_ZOOM  = "zoom"
     }
 
     private val mContext = context

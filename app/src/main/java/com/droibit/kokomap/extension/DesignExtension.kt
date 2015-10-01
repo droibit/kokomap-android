@@ -6,7 +6,7 @@ import android.view.View
 /**
  * Support Design ライブラリの拡張を定義する
  *
- * Created by kumagai on 2015/06/26.
+ * @author kumagai
  */
 
 

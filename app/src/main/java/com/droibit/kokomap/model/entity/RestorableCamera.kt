@@ -13,7 +13,7 @@ import com.google.android.gms.maps.model.LatLng
  * @param lng 地図の経度
  * @param zoom 地図の拡大率
  */
-public @data class RestorableCamera constructor(lat: Double, lng: Double, zoom: Float) {
+public class RestorableCamera constructor(lat: Double, lng: Double, zoom: Float) {
 
     val latLng = LatLng(lat, lng)
     val zoom = zoom

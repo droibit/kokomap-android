@@ -16,8 +16,7 @@ import java.util.*
  * [Bitmap] を内部ストレージに保存するためのクラス。
  * 保存する際はクオリティ85 の jpeg形式の画像にしている。
  *
- * @auther kumagai
- * @since 15/06/22
+ * @author kumagai
  *
  * @constructor 新しいインスタンスを生成する
  * @param context コンテキスト

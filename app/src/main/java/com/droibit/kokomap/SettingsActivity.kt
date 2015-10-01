@@ -7,8 +7,7 @@ import android.support.v7.widget.Toolbar
 /**
  * 設定画面を表示するためのアクティビティ
  *
- * @auther kumagai
- * @since 15/06/22
+ * @author kumagai
  */
 public class SettingsActivity: AppCompatActivity() {
 

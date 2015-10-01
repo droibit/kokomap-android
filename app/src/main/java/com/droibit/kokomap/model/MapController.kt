@@ -29,26 +29,25 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
 import java.io.IOException
 
-public val MSG_DROPPED_MARKER:  Int = 1
-public val MSG_SNIPPET_OK:      Int = 2
-public val MSG_SNIPPET_CANCEL:  Int = 3
-public val MSG_SNAPSHOT_TOOK:   Int = 4
-public val MSG_USER_COMPLETE:   Int = 5 // ユーザが完了を選択した
-public val MSG_USER_RETAKE:     Int = 6
-public val MSG_SNAPSHOT_SAVED:  Int = 7
+const val MSG_DROPPED_MARKER:  Int = 1
+const val MSG_SNIPPET_OK:      Int = 2
+const val MSG_SNIPPET_CANCEL:  Int = 3
+const val MSG_SNAPSHOT_TOOK:   Int = 4
+const val MSG_USER_COMPLETE:   Int = 5 // ユーザが完了を選択した
+const val MSG_USER_RETAKE:     Int = 6
+const val MSG_SNAPSHOT_SAVED:  Int = 7
 
-public val FLOW_MARKER_DROP_ONLY: Int         = 1
-public val FLOW_MARKER_DROP_WITH_BALLOON: Int = 2
+const val FLOW_MARKER_DROP_ONLY:         Int = 1
+const val FLOW_MARKER_DROP_WITH_BALLOON: Int = 2
 
-public val REQUEST_ACCESS_LOCATION: Int = 1
-public val REQUEST_WRITE_EXTERNAL_STORAGE: Int = 2
+const val REQUEST_ACCESS_LOCATION:        Int = 1
+const val REQUEST_WRITE_EXTERNAL_STORAGE: Int = 2
 
 /**
  * GoogleMapと各種モデルクラスを連携させるためのクラス。<br>
  * SupportMapFragmentを継承せずこのクラスにデリゲートする
  *
- * @auther kumagai
- * @since 15/06/07
+ * @author kumagai
  *
  * @constructor 新しいインスタンスを生成する
  * @param context コンテキスト
