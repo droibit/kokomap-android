@@ -12,9 +12,8 @@ import android.support.v4.app.FragmentManager
 import android.support.v7.app.AlertDialog
 import android.view.View
 import android.widget.ImageView
-import com.droibit.easycreator.compat.fragment
-import com.droibit.easycreator.sendMessage
 import com.droibit.kokomap.R
+import com.droibit.kokomap.extension.sendMessage
 import com.droibit.kokomap.model.MSG_USER_COMPLETE
 import com.droibit.kokomap.model.MSG_USER_RETAKE
 import kotlin.properties.Delegates
@@ -38,9 +37,12 @@ class PreviewDialogFragment: DialogFragment(), DialogInterface.OnClickListener {
          * @param snapshot 表示するビットマップ
          * @param launchedPickMode 他アプリから起動しているか
          */
-        fun newInstance(snapshot: Bitmap, launchedPickMode: Boolean): PreviewDialogFragment = fragment { args ->
+        fun newInstance(snapshot: Bitmap, launchedPickMode: Boolean) = PreviewDialogFragment().apply {
+            val args = Bundle(2)
             args.putParcelable(ARG_SNAPSHOT, snapshot)
             args.putBoolean(ARG_LAUNCHED_PICK_MODE, launchedPickMode)
+
+            arguments = args
         }
     }
 

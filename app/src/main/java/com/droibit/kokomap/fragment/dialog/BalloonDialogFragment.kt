@@ -16,8 +16,8 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
-import com.droibit.easycreator.sendMessage
 import com.droibit.kokomap.R
+import com.droibit.kokomap.extension.sendMessage
 import com.droibit.kokomap.model.MSG_SNIPPET_CANCEL
 import com.droibit.kokomap.model.MSG_SNIPPET_OK
 import kotlin.properties.Delegates

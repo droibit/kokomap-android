@@ -4,7 +4,7 @@ import android.os.Handler
 import android.os.SystemClock
 import android.view.animation.BounceInterpolator
 import android.view.animation.Interpolator
-import com.droibit.easycreator.sendMessage
+import com.droibit.kokomap.extension.sendMessage
 import com.droibit.kokomap.model.MSG_DROPPED_MARKER
 import com.google.android.gms.maps.model.Marker
 

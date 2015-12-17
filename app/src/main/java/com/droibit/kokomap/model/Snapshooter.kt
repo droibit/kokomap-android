@@ -1,7 +1,7 @@
 package com.droibit.kokomap.model
 
 import android.os.Handler
-import com.droibit.easycreator.sendMessage
+import com.droibit.kokomap.extension.sendMessage
 import com.droibit.trimmin.Trimmin
 import com.google.android.gms.maps.GoogleMap
 

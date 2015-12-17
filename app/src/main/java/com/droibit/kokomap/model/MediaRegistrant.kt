@@ -1,11 +1,11 @@
 package com.droibit.kokomap.model
 
+import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore.Images.ImageColumns
 import android.provider.MediaStore.Images.Media
 import android.provider.MediaStore.MediaColumns
-import com.droibit.easycreator.insert
 import java.io.File
 
 /**
@@ -31,13 +31,14 @@ class MediaRegistrant constructor(context: Context) {
      * @return 登録後の画像ファイルのURI（content://...)
      */
     public fun register(filePath: String): Uri? {
-        return mContext.contentResolver.insert(Media.EXTERNAL_CONTENT_URI) { values ->
+        val values = ContentValues().apply {
             val imgFile = File(filePath)
-            values.put(MediaColumns.TITLE, imgFile.name)
-            values.put(MediaColumns.DISPLAY_NAME, imgFile.name)
-            values.put(MediaColumns.MIME_TYPE, MIME_JPEG)
-            values.put(MediaColumns.DATA, imgFile.absolutePath)
-            values.put(ImageColumns.DATE_TAKEN, imgFile.lastModified())
+            put(MediaColumns.TITLE, imgFile.name)
+            put(MediaColumns.DISPLAY_NAME, imgFile.name)
+            put(MediaColumns.MIME_TYPE, MIME_JPEG)
+            put(MediaColumns.DATA, imgFile.absolutePath)
+            put(ImageColumns.DATE_TAKEN, imgFile.lastModified())
         }
+        return mContext.contentResolver.insert(Media.EXTERNAL_CONTENT_URI, values)
     }
 }

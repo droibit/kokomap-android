@@ -1,22 +1,17 @@
 package com.droibit.kokomap.model
 
 import android.graphics.Bitmap
-import android.net.Uri
 import android.provider.MediaStore
 import android.provider.MediaStore.MediaColumns
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
 import android.test.InstrumentationTestCase
 import android.test.suitebuilder.annotation.SmallTest
-import com.droibit.easycreator.kDelete
 import org.junit.Test
 import org.junit.runner.RunWith
 import kotlin.properties.Delegates
-import junit.framework.Assert.*
-import org.junit.After
 import org.junit.Before
 import java.io.File
-import java.util.*
 
 /**
  * [BitmapWriter] クラスの単体テスト
@@ -36,7 +31,7 @@ public class BitmapWriterTest: InstrumentationTestCase() {
 
         injectInstrumentation(InstrumentationRegistry.getInstrumentation())
 
-        mWriter = BitmapWriter(getInstrumentation().getTargetContext())
+        mWriter = BitmapWriter(instrumentation.targetContext)
     }
 
 
@@ -74,19 +69,17 @@ public class BitmapWriterTest: InstrumentationTestCase() {
         assertNotNull(registeredUri)
 
         // コンテントプロバイダーのスキームになっているか
-        assertEquals(registeredUri!!.getScheme(), "content");
+        assertEquals(registeredUri!!.scheme, "content");
 
         // コンテンツプロバイダーからビットマップが取得できるか
-        val context = getInstrumentation().getTargetContext()
-        val storedBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), registeredUri);
+        val context = instrumentation.targetContext
+        val storedBitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, registeredUri);
         assertNotNull(storedBitmap)
         storedBitmap.recycle()
 
         // 後始末
         val delWhere = "${MediaColumns.DATA}=?"
-        val delCount = context.getContentResolver().kDelete(uri           = registeredUri,
-                                                            where         = "${MediaColumns.DATA}=?",
-                                                            selectionArgs = arrayOf(bitmapFilePath))
+        val delCount = context.contentResolver.delete(registeredUri, delWhere, arrayOf(bitmapFilePath))
         assertEquals(delCount, 1)
     }
 }

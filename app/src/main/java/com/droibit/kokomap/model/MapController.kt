@@ -14,13 +14,11 @@ import android.support.annotation.WorkerThread
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.util.Log
-import com.droibit.easycreator.getInteger
-import com.droibit.easycreator.getLocationManager
-import com.droibit.easycreator.postDelayed
-import com.droibit.easycreator.sendMessage
 import com.droibit.kokomap.BuildConfig
 import com.droibit.kokomap.R
 import com.droibit.kokomap.extension.moveCamera
+import com.droibit.kokomap.extension.postDelayed
+import com.droibit.kokomap.extension.sendMessage
 import com.droibit.kokomap.model.entity.RestorableCamera
 import com.droibit.kokomap.view.animation.MarkerAnimator
 import com.google.android.gms.maps.GoogleMap
@@ -130,7 +128,7 @@ class MapController constructor(context: Context):
             mMarkerAnimator.drop(
                     target         = marker,
                     flowType       = withBalloon.toDropFlow(),
-                    durationMillis = mContext.getInteger(R.integer.bouce_animation_millis).toLong()
+                    durationMillis = mContext.resources.getInteger(R.integer.bouce_animation_millis).toLong()
             )
         }
     }
@@ -197,7 +195,7 @@ class MapController constructor(context: Context):
      * とれなかった場合は最後に表示していた地図の状態を復元する。
      */
     fun moveInitialPosition() {
-        val lm = mContext.getLocationManager()
+        val lm = mContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val ll = lm?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
 
         var camera = if (ll != null) {

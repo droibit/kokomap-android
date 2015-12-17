@@ -17,9 +17,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import butterknife.bindView
-import com.droibit.easycreator.intent
-import com.droibit.easycreator.postDelayed
-import com.droibit.easycreator.startActivity
+import com.droibit.kokomap.extension.postDelayed
 import com.droibit.kokomap.extension.showSnackbar
 import com.droibit.kokomap.fragment.dialog.BalloonDialogFragment
 import com.droibit.kokomap.fragment.dialog.PreviewDialogFragment
@@ -148,7 +146,7 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
 
     // 設定画面を表示する
     private fun startSettingsActivity(): Boolean {
-        startActivity<SettingsActivity>()
+        startActivity(Intent(this, SettingsActivity::class.java))
         return true
     }
 
@@ -187,7 +185,9 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
     private fun onMapSnapshotTook(snapshot: Bitmap) {
         showPreviewDialog(snapshot, mLaunchedPickMode)
 
-        mHandler.postDelayed(250L) { mMapController.clearMarker() }
+        mHandler.postDelayed(250L) {
+            mMapController.clearMarker()
+        }
     }
 
     // 一連の処理が完了した時に呼ばれる処理
@@ -208,7 +208,10 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
         if (imgUri == null) {
             setResult(Activity.RESULT_CANCELED)
         } else {
-            setResult(Activity.RESULT_OK, intent(imgUri))
+            val intent = Intent().apply {
+                            setData(imgUri)
+                        }
+            setResult(Activity.RESULT_OK, intent)
         }
         finish()
     }

@@ -2,6 +2,8 @@ package com.droibit.kokomap.utils
 
 import android.os.Handler
 import android.os.Message
+import android.util.Log
+import com.droibit.kokomap.BuildConfig
 import java.util.*
 
 /**
@@ -65,19 +67,13 @@ public open class ResumeHandler(): Handler() {
         try {
             (msg.obj as Runnable).run()
         } catch (e: ClassCastException) {
-            e.printStackTrace()
+            Log.e(BuildConfig.BUILD_TYPE, "", e)
         }
     }
 }
 
-public fun ResumeHandler.sendRunnableMessage(runDelegate: ()->Unit) {
+public inline fun  ResumeHandler.sendRunnableMessageDelayed(delayMillis: Long, crossinline run: ()->Unit) {
     val msg = obtainMessage()
-    msg.obj = Runnable { runDelegate }
-    sendMessage(msg)
-}
-
-public fun ResumeHandler.sendRunnableMessageDelayed(delayMillis: Long, runDelegate: ()->Unit) {
-    val msg = obtainMessage()
-    msg.obj = Runnable { runDelegate() }
+    msg.obj = Runnable { run() }
     sendMessageDelayed(msg, delayMillis)
 }

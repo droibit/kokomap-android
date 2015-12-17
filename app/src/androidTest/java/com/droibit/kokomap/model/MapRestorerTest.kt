@@ -1,6 +1,5 @@
 package com.droibit.kokomap.model
 
-import android.content.Context
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
 import android.test.InstrumentationTestCase
@@ -10,10 +9,6 @@ import com.google.android.gms.maps.model.LatLng
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.junit.Assert.assertTrue
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertNotNull
-import kotlin.properties.Delegates
 
 /**
  * [MapRestorer] クラスの単体テスト
@@ -35,7 +30,7 @@ public class MapRestorerTest: InstrumentationTestCase() {
     @Test
     public fun testStoreAndRestore() {
         // プリファレンスへ保存
-        val restorer = MapRestorer(getInstrumentation().getContext())
+        val restorer = MapRestorer(instrumentation.context)
         val notRestoreCamera = CameraPosition.builder()
                                     .target(LatLng(MapRestorer.DEFAULT_LAT,
                                                    MapRestorer.DEFAULT_LNG))

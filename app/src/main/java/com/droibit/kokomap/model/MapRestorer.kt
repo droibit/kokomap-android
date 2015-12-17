@@ -1,8 +1,7 @@
 package com.droibit.kokomap.model
 
 import android.content.Context
-import com.droibit.easycreator.commit
-import com.droibit.easycreator.getDefaultSharedPreferences
+import android.preference.PreferenceManager.getDefaultSharedPreferences
 import com.droibit.kokomap.model.entity.RestorableCamera
 import com.droibit.kokomap.model.entity.toRestorableCamera
 import com.google.android.gms.maps.model.CameraPosition
@@ -35,11 +34,14 @@ class MapRestorer constructor(context: Context) {
      *
      * @param cameraPosition GoogleMapから取得したカメラ情報
      */
-    fun store(cameraPosition: CameraPosition) = mContext.getDefaultSharedPreferences().commit {
-        val camera = cameraPosition.toRestorableCamera()
-        putString(KEY_LAT, camera.latitude.toString())
-        putString(KEY_LNG, camera.latLng.toString())
-        putFloat(KEY_ZOOM, camera.zoom)
+    fun store(cameraPosition: CameraPosition): Boolean {
+        val editor = getDefaultSharedPreferences(mContext).edit().apply() {
+            val camera = cameraPosition.toRestorableCamera()
+            putString(KEY_LAT, camera.latitude.toString())
+            putString(KEY_LNG, camera.latLng.toString())
+            putFloat(KEY_ZOOM, camera.zoom)
+        }
+        return editor.commit()
     }
 
     /**
@@ -48,7 +50,7 @@ class MapRestorer constructor(context: Context) {
      * @return 復元した[RestorableCamera]オブジェクト
      */
     fun restore(): RestorableCamera {
-        val prefs = mContext.getDefaultSharedPreferences()
+        val prefs = getDefaultSharedPreferences(mContext)
         return RestorableCamera(
                 lat = prefs.getString(KEY_LAT, DEFAULT_LAT.toString()).toDouble(),
                 lng = prefs.getString(KEY_LNG, DEFAULT_LNG.toString()).toDouble(),
