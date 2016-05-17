@@ -8,7 +8,7 @@ import com.squareup.leakcanary.LeakCanary
  *
  * @author kumagai
  */
-public class MyApplication: Application() {
+class MyApplication: Application() {
 
     override fun onCreate() {
         super.onCreate()

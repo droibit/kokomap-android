@@ -31,14 +31,14 @@ class MarkerAnimator constructor(callback: Handler.Callback) {
     fun drop(target: Marker, flowType: Int, durationMillis: Long) {
         isAnimating = true
 
-        mHandler.post {
+        mHandler.postDrop {
             val elapsedMillis = SystemClock.uptimeMillis() - startMillis
             val t = Math.max(1f - interpolator.getInterpolation((elapsedMillis.toFloat() / durationMillis)), 0f)
             target.setAnchor(.5f, 1f + 10f * t)
 
             if (t > 0f) {
                 mHandler.postDelayed(this, 15L);
-                return@post
+                return@postDrop
             }
             target.setAnchor(.5f, 1f)
             mHandler.sendMessage {
@@ -61,4 +61,4 @@ private class DropRunnable constructor (private val drop: DropRunnable.()->Unit)
 
     override fun run() = drop()
 }
-private fun Handler.post(run: DropRunnable.()->Unit) = post(DropRunnable(run))
+private fun Handler.postDrop(run: DropRunnable.()->Unit) = post(DropRunnable(run))

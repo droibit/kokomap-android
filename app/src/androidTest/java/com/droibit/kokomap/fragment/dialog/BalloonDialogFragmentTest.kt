@@ -28,24 +28,24 @@ import kotlin.properties.Delegates
  */
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-public class BalloonDialogFragmentTest: ActivityInstrumentationTestCase2<MainActivity>(javaClass<MainActivity>()) {
+class BalloonDialogFragmentTest: ActivityInstrumentationTestCase2<MainActivity>(MainActivity::class.java) {
 
     private var mActivity: MainActivity by Delegates.notNull()
 
     @Before
-    public fun testSetUp() {
+    fun testSetUp() {
         super.setUp()
         injectInstrumentation(InstrumentationRegistry.getInstrumentation());
         mActivity = getActivity()
     }
 
     @After
-    public fun testTearDown() {
+    fun testTearDown() {
         super.tearDown()
     }
 
     @Test
-    public fun testInputText() {
+    fun testInputText() {
         mActivity.showBalloonDialog()
 
         onView(withId(android.R.id.button1)).check(matches(not(isEnabled())))
@@ -57,7 +57,7 @@ public class BalloonDialogFragmentTest: ActivityInstrumentationTestCase2<MainAct
     }
 
     @Test
-    public fun testAppearance() {
+    fun testAppearance() {
         mActivity.showBalloonDialog()
         onView(withId(android.R.id.button1)).check(matches(withText(mActivity.getString(android.R.string.ok))))
         onView(withId(android.R.id.button2)).check(matches(withText(mActivity.getString(android.R.string.cancel))))

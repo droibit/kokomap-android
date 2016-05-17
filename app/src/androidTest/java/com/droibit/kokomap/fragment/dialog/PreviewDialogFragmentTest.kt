@@ -25,13 +25,13 @@ import kotlin.properties.Delegates
  */
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-public class PreviewDialogFragmentTest: ActivityInstrumentationTestCase2<MainActivity>(javaClass<MainActivity>()) {
+class PreviewDialogFragmentTest: ActivityInstrumentationTestCase2<MainActivity>(MainActivity::class.java) {
 
     private var mActivity: MainActivity by Delegates.notNull()
     private var mSnapshot: Bitmap by Delegates.notNull()
 
     @Before
-    public fun testSetUp() {
+    fun testSetUp() {
         super.setUp()
         injectInstrumentation(InstrumentationRegistry.getInstrumentation());
         mActivity = getActivity()
@@ -39,14 +39,14 @@ public class PreviewDialogFragmentTest: ActivityInstrumentationTestCase2<MainAct
     }
 
     @After
-    public fun testTearDown() {
+    fun testTearDown() {
         super.tearDown()
 
         mSnapshot.recycle()
     }
 
     @Test
-    public fun testPositiveButtonIsDone() {
+    fun testPositiveButtonIsDone() {
         // 他アプリからの起動の場合は「完了」のテキスト
         mActivity.showPreviewDialog(mSnapshot, launchedPickMode = true)
         onView(withId(android.R.id.button1)).check(matches(withText(mActivity.getString(R.string.text_done))))
@@ -54,7 +54,7 @@ public class PreviewDialogFragmentTest: ActivityInstrumentationTestCase2<MainAct
     }
 
     @Test
-    public fun testPositiveButtonIsSave() {
+    fun testPositiveButtonIsSave() {
         // 通常の起動の場合は「保存」のテキスト
         mActivity.showPreviewDialog(mSnapshot, launchedPickMode = false)
         onView(withId(android.R.id.button1)).check(matches(withText(mActivity.getString(R.string.text_save))))

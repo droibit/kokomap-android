@@ -71,6 +71,7 @@ class MapController constructor(context: Context):
     override fun onMapReady(map: GoogleMap) {
         mMap = map
 
+        // FIXME: ↓で落ちる
         map.isMyLocationEnabled = true
         map.setOnCameraChangeListener(this)
 
@@ -196,9 +197,9 @@ class MapController constructor(context: Context):
      */
     fun moveInitialPosition() {
         val lm = mContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        val ll = lm?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+        val ll = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
 
-        var camera = if (ll != null) {
+        val camera = if (ll != null) {
                         RestorableCamera(ll.latitude, ll.longitude, MapRestorer.Companion.EXPAND_ZOOM)
                      } else {
                         mRestorer.restore()

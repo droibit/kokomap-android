@@ -21,6 +21,6 @@ public class SettingsActivity: AppCompatActivity() {
         toolbar.setTitleTextColor(R.color.gray_dark)
 
         setSupportActionBar(toolbar)
-        supportActionBar.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 }

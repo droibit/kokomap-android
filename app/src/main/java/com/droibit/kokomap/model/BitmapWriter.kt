@@ -38,7 +38,7 @@ class BitmapWriter constructor(context: Context) {
     private val mContext = context
 
     // MediaStoreに画像を登録します
-    public val registrant: MediaRegistrant = MediaRegistrant(context)
+    val registrant: MediaRegistrant = MediaRegistrant(context)
 
     /**
      * ビットマップをjpeg形式の画像ファイルに保存する。
@@ -47,8 +47,8 @@ class BitmapWriter constructor(context: Context) {
      * @return 保存したファイルのURI
      */
     @WorkerThread
-    public fun write(bitmap: Bitmap): String {
-        var destDir = getDestinationDir(mContext)
+    fun write(bitmap: Bitmap): String {
+        val destDir = getDestinationDir(mContext)
         if (!destDir.exists() && !destDir.mkdir()) {
             throw IOException("保存先のフォルダの作成できません")
         }

@@ -197,7 +197,7 @@ public class MainActivity : AppCompatActivity(), Handler.Callback {
     // スナップショットの保存が終わった時に呼ばれる処理
     @MainThread
     private fun onMapSnapshotSaved(imgUri: Uri?) {
-        var resId = if (imgUri == null) R.string.snackbar_failed_save else R.string.snackbar_saved
+        val resId = if (imgUri == null) R.string.snackbar_failed_save else R.string.snackbar_saved
         // 通常起動の場合
         if (!mLaunchedPickMode) {
             showSnackbar(mRootView, resId, Snackbar.LENGTH_LONG)

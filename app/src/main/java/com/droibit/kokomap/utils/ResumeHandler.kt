@@ -72,7 +72,7 @@ public open class ResumeHandler(): Handler() {
     }
 }
 
-public inline fun  ResumeHandler.sendRunnableMessageDelayed(delayMillis: Long, crossinline run: ()->Unit) {
+inline fun  ResumeHandler.sendRunnableMessageDelayed(delayMillis: Long, crossinline run: ()->Unit) {
     val msg = obtainMessage()
     msg.obj = Runnable { run() }
     sendMessageDelayed(msg, delayMillis)

@@ -14,7 +14,7 @@ import com.droibit.kokomap.fragment.dialog.LicensesDialogFragment
  *
  * @author kumagai
  */
-public class SettingsFragment: PreferenceFragment() {
+class SettingsFragment: PreferenceFragment() {
 
     /** {@inheritDoc} */
     override fun onCreate(savedInstanceState: Bundle?) {

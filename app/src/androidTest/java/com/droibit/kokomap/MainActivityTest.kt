@@ -17,19 +17,19 @@ import kotlin.properties.Delegates
  */
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-public class MainActivityTest: ActivityInstrumentationTestCase2<MainActivity>(javaClass<MainActivity>()) {
+class MainActivityTest: ActivityInstrumentationTestCase2<MainActivity>(MainActivity::class.java) {
 
     private var mActivity: MainActivity by Delegates.notNull()
 
     @Before
-    public fun testSetUp() {
+    fun testSetUp() {
         super.setUp()
         injectInstrumentation(InstrumentationRegistry.getInstrumentation());
-        mActivity = getActivity()
+        mActivity = activity
     }
 
     @After
-    public fun testTearDown() {
+    fun testTearDown() {
         super.tearDown()
     }
 }
